@@ -1,6 +1,8 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports ={
     entry:path.join(__dirname,'./src/main.js'),
@@ -13,7 +15,12 @@ module.exports ={
         new htmlWebpackPlugin({
             template:path.join(__dirname,'./src/index.html'),
             filename:'index.html'
-        })
+        }),
+        new ExtractTextPlugin({
+            // 从js文件中提取出来的 .css文件的名称
+            filename: `main.css`}),
+        new VueLoaderPlugin(),
+        
     ],
 
     optimization: {
@@ -37,6 +44,10 @@ module.exports ={
           { test: /\.vue$/, use: 'vue-loader' } // 处理 .vue 文件的 loader
         ]
       },
+      externals: {
+        jquery: 'jQuery'
+      },
+      devtool: 'source-map',
       resolve: {
         alias: { // 修改 Vue 被导入时候的包的路径
           // "vue$": "vue/dist/vue.js"
