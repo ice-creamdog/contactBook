@@ -3,7 +3,9 @@ import Vue from "vue"
 
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
-
+import VueResource from "vue-resource";
+Vue.use(VueResource);
+Vue.http.options.emulateJSON = true;
 import App from "./App.vue"
 import Element from "element-ui"
 Vue.use(Element)

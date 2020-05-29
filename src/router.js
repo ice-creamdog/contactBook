@@ -2,6 +2,7 @@
 import VueRouter from 'vue-router'
 
 import Login from './component/login.vue'
+import register from './component/register.vue'
 import index from './component/index.vue'
 import users from './component/users.vue'
 import help from './component/help.vue'
@@ -15,7 +16,8 @@ var router = new VueRouter({
     routes: [
       {path:'/',redirect: '/home'},
       {path:'/home' ,component:index},
-      {path:'/login',component:Login},
+      {path:'/login',component:Login },
+      {path:'/register' ,component:register},
       {path:'/help' ,component:help},
       {path:'/users',component:users},
       {path:'/add',component:add},

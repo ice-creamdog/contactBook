@@ -3,7 +3,8 @@
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <el-menu-item index="1"><img src="" alt=""></el-menu-item>
             <router-link to="/users" index="2" class="el-menu-item">用户</router-link>
-            <router-link to="/login" index="3" class="el-menu-item">登录/注册</router-link>
+             <el-button type="text" @click="open"  class="el-menu-item">登录</el-button>
+            <router-link to="/register" index="3" class="el-menu-item">注册</router-link>
             <router-link to="/help " index="4" class="el-menu-item">帮助</router-link>
         </el-menu>
         <div class="chart"></div>
@@ -20,8 +21,29 @@ export default {
       };
     },
     methods: {
+
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
+      },
+       open() {
+        this.$prompt('请输入邮箱', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          inputErrorMessage: '邮箱格式不正确',
+          inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          inputErrorMessage: '密码格式不正确'
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '你的邮箱是: ' + value
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
       }
     }
 }
