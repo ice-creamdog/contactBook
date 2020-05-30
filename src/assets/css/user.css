@@ -1,0 +1,106 @@
+.el-header{
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }
+  
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  .el-form-item__content {
+    height: 20px;
+    line-height: 162px;
+    position: relative;
+    font-size: 23px;}
+    .el-form--inline .el-form-item {
+        font-size: 25px;
+    height: 20px;
+    width: 100%;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
+}.el-form-item__label {
+    text-align: right;
+    vertical-align: middle;
+    float: left;
+    font-size: 25px;
+    color: #606266;
+    line-height: 40px;
+    padding: 0 12px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 23px;
+    padding-right: 10px;
+    font-size: 20px;
+}
+.el-table th>.cell {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    vertical-align: middle;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    font-size: 20px;
+}
+.el-table td, .el-table th.is-leaf {
+    border-bottom: 1px solid #EBEEF5;
+        background-color: #E9EEF3;
+}
+.layout{
+    height: 150px;
+    border: 1px solid #d7dde4;
+    background: #f5f7f9;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+
+    
+}
+.layout-header{
+        height: 150px;
+        
+    }
+.layout-header .search{
+    width: 400px;
+    position: absolute;
+    
+}
+.layout-header .icon{
+    float: right;
+    height: 25px;
+}
+.layout-nav{
+    width: 420px;
+    margin: 0 auto;
+    margin-right: 20px;
+    bottom: 12px;
+}
+.ivu-menu {
+    display: block;
+    margin: 47px 20px;
+    padding: 0;
+    outline: 0;
+    list-style: none;
+    color: #515a6e;
+    font-size: 14px;
+    position: relative;
+    z-index: 900;
+}
