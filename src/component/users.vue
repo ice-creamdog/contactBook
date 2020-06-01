@@ -2,123 +2,270 @@
 <template>
     <div class="user_container">
         <Layout class="layout">
+                
             <Header class="layout-header">
                     <Menu mode="horizontal" theme="dark" active-name="1">
                         <div class="search">
-                            <el-autocomplete v-model="state" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect">
-                            </el-autocomplete>
-                            <span class="icon"><el-button type="primary" icon="el-icon-search">搜索</el-button></span>
+                            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                              <el-form-item >
+                                    <el-input v-model="formInline.CName" placeholder="联系人姓名"></el-input>
+                                  </el-form-item>
+                                  <el-form-item >
+                                    <el-input v-model="formInline.CSex" placeholder="联系人性别"></el-input>
+                                  </el-form-item>
+                                  <el-form-item >
+                                    <el-select v-model="formInline.CtypeId" placeholder="请选择">
+                                      <el-option v-for="item in formInline.CType" :key="item.typeId" :label="item.typeName" :value="item.typeId">
+                                      </el-option>
+                                    </el-select>
+                                  </el-form-item>
+                                  <el-form-item>
+                                    <el-button type="primary" @click="search">查询</el-button>
+                                  </el-form-item>
+                              </el-form>
                         </div>
                         <div class="layout-nav">
                             <MenuItem name="1">
                                 <Icon type="ios-navigate"></Icon>
-                                更多设置
+                                <router-link to="/settings" >更多设置</router-link>
                             </MenuItem>
                             <MenuItem name="2">
                                 <Icon type="ios-keypad"></Icon>
-                                帮助
+                                <router-link to="/help">帮助</router-link>
+                                
                             </MenuItem>
                             <MenuItem name="3">
                                 <Icon type="ios-analytics"></Icon>
-                                头像
+                                <router-link to="/users" >用户</router-link>
                             </MenuItem>
                             <MenuItem name="3">
-                                <router-link to="/add">添加联系人</router-link>
+                                <router-link to="/add"  >添加联系人</router-link>
                             </MenuItem>
+                            <MenuItem name="4">
+                                <router-link to="/personal">个人资料</router-link>
+                            </MenuItem>
+                            <MenuItem name="5">
+                                <router-link to="/type"  >联系人类型详情</router-link>
+                            </MenuItem>
+                            
                         </div>
+                        
                     </Menu>
             </Header>
+            <Breadcrumb :style="{margin: '16px 0'}">
+                            <BreadcrumbItem>用户</BreadcrumbItem>
+                            
+                    
+                </Breadcrumb>
                  <Content :style="{padding: '0 50px'}">
                   <Card>
                       <div style="min-height: 200px;">
-                                  <el-table :data="tableData" style="width: 100%">
-                                      <el-table-column type="expand">
-                                          <template slot-scope="props">
-                                              <el-form label-position="left" inline class="demo-table-expand">
-                                              <el-form-item label="商品名称："><span>{{ props.row.name }}</span></el-form-item>
-                                              <el-form-item label="所属店铺："><span>{{ props.row.shop }}</span></el-form-item>
-                                              <el-form-item label="商品  ID："><span>{{ props.row.id }}</span></el-form-item>
-                                              <el-form-item label="店铺  ID："><span>{{ props.row.shopId }}</span></el-form-item>
-                                              <el-form-item label="商品分类："><span>{{ props.row.category }}</span></el-form-item>
-                                              <el-form-item label="店铺地址："><span>{{ props.row.address }}</span> </el-form-item>
-                                              <el-form-item label="商品描述："> <span>{{ props.row.desc }}</span></el-form-item>
-                                              </el-form>
-                                          </template>
-                                      </el-table-column>
-
-                              <el-table-column label="商品 ID" prop="id"></el-table-column>
-                              <el-table-column label="商品名称" prop="name"></el-table-column>
-                              <el-table-column label="描述" prop="desc"> </el-table-column>
-                              <el-table-column label="操作" prop="desc"> </el-table-column>
-                          </el-table>
+                                  <Table border :columns="columns12" :data="data6">
+                                    <template slot-scope="{ row }" slot="name">
+                                        <strong>{{ row.name }}</strong>
+                                    </template>
+                                    <template slot-scope="{ row, index }" slot="action">
+                                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">View</Button>
+                                        <Button type="error" size="small" @click="remove(index)">Delete</Button>
+                                    </template>
+                                </Table>
                           Content
                       </div>
                   </Card>
                 </Content>
             <Footer class="layout-footer-center"></Footer>
         </Layout>
-     <router-link to="/personal">个人资料</router-link>
+     
         
        
     </div>
 </template>
 
 <script>
-export default {
-   data() {
-      return {
-        tableData: [{
-          id: '12987122',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        },{
-          id: '12987122',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }],
-         restaurants: [],
-        state: '',
-        timeout:  null
-      }
-    },
-     methods: {
-      loadAll() {
-        return [
-          { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-         
-         
-        ];
-      },
-      querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+ export default {
+        data () {
+            return {
+              formInline: {
+                CName: '',
+                CSex: '',
+                CType:[],
+                CtypeId:''
+              },
+              columns12: [
+                    {
+                        title: '联系人名字',
+                        key: 'cname',
+                        width: 300,
+                        fixed: 'left'
+                    },
+                    {
+                        title: '联系人电话',
+                        key: 'cphone',
+                        width: 300
+                    },
+                    {
+                        title: '联系人性别',
+                        key: 'csex',
+                        width: 300
+                    },
+                    {
+                        title: '联系人地址',
+                        key: 'caddress',
+                        width: 300
+                    },
+                    {
+                        title: '联系人qq',
+                        key: 'cqq',
+                        width: 500
+                    },
+                    {
+                        title: '联系人职务',
+                        key: 'cwork',
+                        width: 300
+                    },
+                    {
+                        title: '联系人分类',
+                        key: 'ctype',
+                        width: 300
+                    },
+                    {
+                        title: '联系人id',
+                        key: 'cid',
+                        width: 300
+                    },
+                    {
+                        title: '用户id',
+                        key: 'uid',
+                        width: 300
+                    },
+                    {
+                        title: 'Action',
+                        slot: 'action',
+                        width: 150,
+                        align: 'center'
+                    }
+                ],
+              data6: [
+                    {
+                        "cname": 'JBrown',
+                        "cphone": 181111111,
+                        "csex": '男',
+                        "caddress": 'New York No. 1 Lake Park',
+                        "cqq": '111111',
+                        "cwork": '程序员',
+                        "ctype":'同学',
+                        "cid":1,
+                        "uid":2
+                    },
+                    {
+                       cname: 'John Brown',
+                        cphone: 181111111,
+                        csex: '男',
+                        caddress: 'New York No. 1 Lake Park',
+                        cqq: '111111',
+                        cwork: '程序员',
+                        ctype:'同学',
+                        cid:1,
+                         uid:2
+                    },
+                    
+                    
+                ]
+            }
+        },
+        created() {
+          this.getCType()
+          this.getContacter()
+        },
+        methods: {
+            
+            getCType(){
+              this.$http.post('/user/type/all',{useId:this.$store.state.userId}).then(result=>{
+                if(result.body.status=="200"){
+                  this.formInline.CType=this.formInline.CType.concat(result.body.message)
+                  
+                  
+                }else{
+                  this.$message.error("获取联系人类型失败！")
+                }
+              })
+            },
 
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          cb(results);
-        }, 3000 * Math.random());
-      },
-      createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      handleSelect(item) {
-        console.log(item);
+              search() {
+          // 搜索功能
+                var data=JSON.stringify({
+                    UId:this.$store.state.userId,
+                    info:"ooo",
+                    CName:this.formInline.CName,
+                    CSex:this.formInline.CSex,
+                    CType:this.formInline.CtypeId
+                  })
+                if(this.CName==''&&this.CSex==""&&this.CType==''){
+                  this.$message.error("输入不能都为空")
+                }else{
+                   this.$http.post('/user/contact/search',data).then(result=>{
+                    if(result.body.status=="200"){
+                      this.data6=result.body.message
+                      this.formInline.CName ="";
+                      this.formInline.Ctypeid ="",
+                      this.formInline.CSex =""
+                    }else{
+                      this.$message.error("查询联系人失败")
+                    }
+                  })
+                }
+                 
+
+                      },
+      //添加联系人之后重新新加载
+          //删除联系人
+          //修改联系人
+            show (index) {
+                this.$Modal.info({
+                    title: '联系人信息',
+                    content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
+                })
+            },
+            remove (index) {
+                this.data6.splice(index, 1);
+                this.$http.post('/user/contact/delete',{
+                  "CId":this.data[index].cid,
+                  "UId":this.$store.state.userId
+                }).then(result=>{
+                  if(result.body.status=="200"){
+                    this.$message.success("删除成功")
+                  }else{
+                    this.$message.error("从数据库删除失败")
+                  }
+                }).catch(function (err) {
+                console.log(err);
+                this.$message.error({
+                  message: err,
+                  showClose: true
+                })
+              })
+            },
+          // 加载联系人信息
+            getContacter(){
+              this.$http.post( '/user/contact/all',{
+                "info":"ooo",
+                "UId":this.$store.state.userId,
+                "ULoginName":this.$store.state.currentUser
+              }).then(result=>{
+                if(result.body.status=='200'){
+                  this.data6=this.data6.concat(result.body.message)
+                }else{
+                  this.$message.error('联系人列表加载失败!')
+                }
+              })
+            },
+          
+            
+          },
+      mounted() {
+       
       }
-    },
-    mounted() {
-      this.restaurants = this.loadAll();
-    }
-  }
+  };
 </script>
 
 <style>

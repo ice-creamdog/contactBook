@@ -1,18 +1,22 @@
 
+import { isLogin } from '../vuex/getters';
 <template>
     <div class="login_container">
-         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-        <FormItem label="用户名" prop="passwd">
-            <Input type="password" v-model="formCustom.passwd"></Input>
+        <Form ref="formInline" :model="formInline" :rules="ruleInline" inline>
+        <FormItem prop="loginName">
+            <Input type="text" v-model="formInline.loginName" placeholder="Username">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+            </Input>
         </FormItem>
-        <FormItem label="密码" prop="passwdCheck">
-            <Input type="password" v-model="formCustom.passwdCheck"></Input>
+        <FormItem prop="password">
+            <Input type="password" v-model="formInline.password" placeholder="Password">
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+            </Input>
         </FormItem>
-        
         <FormItem>
-            <Button type="primary" @click="handleSubmit('formCustom')">Submit</Button>
-            <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
+            <Button type="primary" @click="login('formInline')">Signin</Button>
         </FormItem>
+    </Form>
     </Form>
     </div>
 </template>
@@ -21,59 +25,69 @@
 
     export default {
         data () {
-            const validatePass = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('Please enter your password'));
-                } else {
-                    if (this.formCustom.passwdCheck !== '') {
-                        // 对第二个密码框单独验证
-                        this.$refs.formCustom.validateField('passwdCheck');
-                    }
-                    callback();
-                }
-            };
-            const validatePassCheck = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('Please enter your password again'));
-                } else if (value !== this.formCustom.passwd) {
-                    callback(new Error('The two input passwords do not match!'));
-                } else {
-                    callback();
-                }
-            };
-           
-            
             return {
-                formCustom: {
-                    passwd: '',
-                    passwdCheck: '',
-                    
+                formInline: {
+                   loginName: '',
+                    password: ''
                 },
-                ruleCustom: {
-                    passwd: [
-                        { validator: validatePass, trigger: 'blur' }
+                loginIng:false,
+                message:{},
+                ruleInline: {
+                   loginName: [
+                        { required: true, message: 'Please fill in the user name', trigger: 'blur' }
                     ],
-                    passwdCheck: [
-                        { validator: validatePassCheck, trigger: 'blur' }
-                    ],
-                    
+                    password: [
+                        { required: true, message: 'Please fill in the password.', trigger: 'blur' },
+                        { type: 'string', min: 6, message: 'The password length cannot be less than 6 bits', trigger: 'blur' }
+                    ]
                 }
             }
         },
+        created(){
+            
+        },
         methods: {
-            handleSubmit (name) {
+            // 点击登录，如果通过表达式验证，发送请求
+            // 判断响应状态，成功就保存信息到个人资料页面，并且实现跳转
+            // 失败就提示用户密码错误
+            login(name) {
+                
                 this.$refs[name].validate((valid) => {
+                    
                     if (valid) {
-                        this.$Message.success('Success!');
+                        var params = JSON.stringify({loginName:this.formInline.loginName,password:this.formInline.password})
+                        this.$http.post('/user/login',params).then(result=>{
+                            
+                            if(result.body.status==="200"){
+                                this.message=result.body.status;
+                                this.formInline.loginName="";
+                                this.formInline.password="";
+                                this.loginIng=true;
+                                this.$message({
+                                    message:"登录成功",
+                                    type: 'success'
+                                    });
+                                sessionStorage.setItem("userName",result.body.message.uloginName)
+                                sessionStorage.setItem("setToken",result.data.body.token);
+                                this.$store.dispatch("setUser",result.body.message.uloginName)
+                                this.$store.dispatch("setToken",result.data.body.token)
+                                this.$store.dispatch("setId",result.body.message.uid)
+                                this.$router.push({path:'/users'})
+                            }else{
+                                this.$message({
+                                    message:'用户名或者密码错误，请重试',
+                                    type:'error'
+                                })
+                            }
+                    })
                     } else {
-                        this.$Message.error('Fail!');
+                        this.$Message.error('输入格式不规范');
                     }
                 })
-            },
-            handleReset (name) {
-                this.$refs[name].resetFields();
             }
-        }
+        },
+        
+
     }
 
 </script>

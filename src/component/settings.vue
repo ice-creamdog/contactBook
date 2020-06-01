@@ -1,4 +1,5 @@
 
+import { setTimeout } from 'timers';
 <template>
     <div class="settings_container">
         <div class="layout">
@@ -9,14 +10,19 @@
                     <div class="layout-nav">
                         
                         <MenuItem name="1">
-                            <Button type="primary" ghost>修改密码</Button>
+                            <el-popover placement="top" width="160" v-model="visible">
+                                <p>确定删除当前用户吗</p>
+                                <div style="text-align: right; margin: 0">
+                                    <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                                    <el-button type="primary" size="mini" @click="deleteUser(Users)">确定</el-button>
+                                </div>
+                                <el-button slot="reference" type="danger"  >删除用户</el-button>
+                            </el-popover>
                         </MenuItem>
                         <MenuItem name="2">
-                            <Button type="info" ghost>退出登录</Button>
+                            <Button type="info" ghost >退出登录</Button>
                         </MenuItem>
-                        <MenuItem name="3">
-                           <Button type="error" ghost>删除用户</Button>
-                        </MenuItem>
+                        
                     </div>
                 </Menu>
             </Header>
@@ -42,9 +48,27 @@
 export default {
     data() {
         return {
-            
+            visible: false,
+            Users:{},
         }
     },
+    methods:{
+        deleteUser(user){
+            this.visble=false;
+            var data = JSON.stringify({loginName:user.loginName,password:user.password})
+            this.$http.post('/user/login',data).then(result=>{
+                if(result.body.status=="200"){
+
+                    clearTimeout(timer);
+                    this.$message.success('删除成功！');
+
+                    const timer=setTimeout(()=>{
+                        this.$router.push({path:'/index'})
+                    })
+                }else{this.$message.error('删除失败，请重试！');}
+            })
+        }
+    }
 }
 </script>
 

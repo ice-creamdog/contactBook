@@ -5,35 +5,30 @@
         <FormItem label="Password" prop="passwd">
             <Input type="password" v-model="formCustom.passwd"></Input>
         </FormItem>
-        <FormItem label="Confirm" prop="passwdCheck">
-            <Input type="password" v-model="formCustom.passwdCheck"></Input>
-        </FormItem>
-        <FormItem label="Age" prop="age">
-            <Input type="text" v-model="formCustom.age" number></Input>
-        </FormItem>
+        
         <FormItem label="姓名" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.cname"></Input>
         </FormItem>
         <FormItem label="电话" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.cphone"></Input>
         </FormItem>
         <FormItem label="性别" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.csex"></Input>
         </FormItem>
         <FormItem label="分类" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.ctype"></Input>
         </FormItem>
         <FormItem label="邮箱" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.cemail"></Input>
         </FormItem>
         <FormItem label="备注" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.cComment"></Input>
         </FormItem>
         <FormItem label="QQ" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.cqq"></Input>
         </FormItem>
         <FormItem label="职务" >
-            <Input type="text" ></Input>
+            <Input type="text" v-model="formCustom.cwork"></Input>
         </FormItem>
         <FormItem>
             <Button type="primary" @click="handleSubmit('formCustom')">Submit</Button>
@@ -86,9 +81,14 @@
             
             return {
                 formCustom: {
-                    passwd: '',
-                    passwdCheck: '',
-                    age: ''
+                    cname:'',
+                    cphone:'',
+                    csex:"",
+                    ctype:'',
+                    cemail:'',
+                    cComment:'',
+                    cqq:'',
+                    cwork:''
                 },
                 ruleCustom: {
                     passwd: [

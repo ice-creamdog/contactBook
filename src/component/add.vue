@@ -2,41 +2,29 @@
 <template>
     <div class="add_container">
         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-        <FormItem label="Password" prop="passwd">
-            <Input type="password" v-model="formCustom.passwd"></Input>
-        </FormItem>
-        <FormItem label="Confirm" prop="passwdCheck">
-            <Input type="password" v-model="formCustom.passwdCheck"></Input>
-        </FormItem>
-        <FormItem label="Age" prop="age">
-            <Input type="text" v-model="formCustom.age" number></Input>
-        </FormItem>
-        <FormItem label="姓名" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="电话" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="性别" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="分类" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="邮箱" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="备注" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="QQ" >
-            <Input type="text" ></Input>
-        </FormItem>
-        <FormItem label="职务" >
-            <Input type="text" ></Input>
-        </FormItem>
+            <FormItem label="联系人地址" prop="caddress">
+                <Input type="text" v-model="formCustom.caddress"></Input>
+            </FormItem>
+            <FormItem label="联系人姓名" prop="cname">
+                <Input type="text" v-model="formCustom.cname"></Input>
+            </FormItem>
+            <FormItem label="联系人电话" prop="cphone">
+                <Input type="text" v-model="formCustom.cphone" ></Input>
+            </FormItem>
+            <FormItem label="联系人QQ" prop="cqq">
+                <Input type="text" v-model="formCustom.cqq"></Input>
+            </FormItem>
+            <FormItem label="联系人性别" prop="csex">
+                <Input type="text" v-model="formCustom.csex"></Input>
+            </FormItem>
+            <FormItem label="联系人分类" prop="ctype">
+                <Input type="text" v-model="formCustom.ctype"></Input>
+            </FormItem>
+            <FormItem label="联系人工作" prop="cwork">
+                <Input type="text" v-model="formCustom.cwork"></Input>
+            </FormItem>
         <FormItem>
-            <Button type="primary" @click="handleSubmit('formCustom')">Submit</Button>
+            <Button type="primary" @click="add('formCustom')">保存</Button>
             <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
         </FormItem>
     </Form>
@@ -46,70 +34,80 @@
 <script>
  export default {
         data () {
-            const validatePass = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('Please enter your password'));
-                } else {
-                    if (this.formCustom.passwdCheck !== '') {
-                        // 对第二个密码框单独验证
-                        this.$refs.formCustom.validateField('passwdCheck');
-                    }
-                    callback();
-                }
-            };
-            const validatePassCheck = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('Please enter your password again'));
-                } else if (value !== this.formCustom.passwd) {
-                    callback(new Error('The two input passwords do not match!'));
-                } else {
-                    callback();
-                }
-            };
-            const validateAge = (rule, value, callback) => {
-                if (!value) {
-                    return callback(new Error('Age cannot be empty'));
-                }
-                // 模拟异步验证效果
-                setTimeout(() => {
-                    if (!Number.isInteger(value)) {
-                        callback(new Error('Please enter a numeric value'));
-                    } else {
-                        if (value < 18) {
-                            callback(new Error('Must be over 18 years of age'));
-                        } else {
-                            callback();
-                        }
-                    }
-                }, 1000);
-            };
+            
             
             return {
                 formCustom: {
-                    passwd: '',
-                    passwdCheck: '',
-                    age: ''
+                    caddress:'',
+                    cname:'',
+                    cphone:'',
+                    cqq:'',
+                    csex:'',
+                    ctype:'',
+                    cwork:'',
                 },
                 ruleCustom: {
-                    passwd: [
-                        { validator: validatePass, trigger: 'blur' }
+                    caddress:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
+                        
                     ],
-                    passwdCheck: [
-                        { validator: validatePassCheck, trigger: 'blur' }
+                    cname:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
                     ],
-                    age: [
-                        { validator: validateAge, trigger: 'blur' }
-                    ]
+                    cphone:[
+                        { required: true, message: 'Please fill in the phone number.', trigger: 'blur' },
+                    ],
+                    cqq:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
+                    ],
+                    csex:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
+                    ],
+                    ctype:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
+                    ],
+                    cwork:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
+                    ],
+                    
                 }
             }
         },
         methods: {
-            handleSubmit (name) {
+            add (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('Success!');
+                        var params = JSON.stringify({
+                            caddress:name.caddress,
+                            cname:name.cname,
+                            cphone:name.cphone,
+                            cqq:name.cqq,
+                            csex:name.csex,
+                           ctype:name.ctype,
+                           cwork:name.cwork,
+                           uid:this.$store.state.userId
+                        })
+                        this.$http.post('/user/contact/insert',).then(res=>{
+                            if(res.body.status=='200'){
+                                clearTimeout(timer)
+                                this.formCustom.caddress="";
+                                this.formCustom.cname="";
+                                this.formCustom.cphone="";
+                                this.formCustom.cqq="";
+                                this.formCustom.csex="";
+                                this.formCustom.ctype="";
+                                this.formCustom.cwork="";
+                                this.$Message.success('添加成功!');
+                                var timer=setTimeout(()=>{
+                                    this.$router.push({path:'/user'})
+                                },1000)
+                            }else{
+                                this.$Message.error('添加失败，请重试');
+                            }
+                        })
+                        
                     } else {
-                        this.$Message.error('Fail!');
+                        this.$Message.error('必须填写电话，请重试');
                     }
                 })
             },
