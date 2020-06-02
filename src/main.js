@@ -18,7 +18,7 @@ import 'view-design/dist/iview.min.js'
 import 'element-ui/lib/index.js'
 import  'element-ui/lib/theme-chalk/index.css'
 
-Vue.http.options.root='http://112.74.86.158';
+Vue.http.options.root='http://112.74.86.158:8646';
 
 
 import router from "./router";

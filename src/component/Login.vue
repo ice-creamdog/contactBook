@@ -55,8 +55,8 @@ import { isLogin } from '../vuex/getters';
                 this.$refs[name].validate((valid) => {
                     
                     if (valid) {
-                        var params = JSON.stringify({loginName:this.formInline.loginName,password:this.formInline.password})
-                        this.$http.post('/user/login',params).then(result=>{
+                        var params = JSON.stringify({uLoginName:this.formInline.loginName,uPassword:this.formInline.password})
+                        this.$http.post('user/login',params).then(result=>{
                             
                             if(result.body.status==="200"){
                                 this.message=result.body.status;

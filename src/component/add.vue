@@ -75,7 +75,8 @@
         },
         methods: {
             add (name) {
-                this.$refs[name].validate((valid) => {
+                if(this.$store.state.isLogin){
+                    this.$refs[name].validate((valid) => {
                     if (valid) {
                         var params = JSON.stringify({
                             caddress:name.caddress,
@@ -87,7 +88,7 @@
                            cwork:name.cwork,
                            uid:this.$store.state.userId
                         })
-                        this.$http.post('/user/contact/insert',).then(res=>{
+                        this.$http.post('/user/contact/update',).then(res=>{
                             if(res.body.status=='200'){
                                 clearTimeout(timer)
                                 this.formCustom.caddress="";
@@ -110,6 +111,8 @@
                         this.$Message.error('必须填写电话，请重试');
                     }
                 })
+                }else{this.$message.error("请先登录")}
+                
             },
             handleReset (name) {
                 this.$refs[name].resetFields();

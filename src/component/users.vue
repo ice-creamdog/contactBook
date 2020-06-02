@@ -180,20 +180,25 @@
         methods: {
             
             getCType(){
-              this.$http.post('/user/type/all',{useId:this.$store.state.userId}).then(result=>{
+              if(this.$store.state.isLogin==true){
+                var dataType = JSON.stringify({useId:this.$store.state.userId})
+                this.$http.post('user/type/all',dataType).then(result=>{
                 if(result.body.status=="200"){
                   this.formInline.CType=this.formInline.CType.concat(result.body.message)
                   
                   
                 }else{
                   this.$message.error("获取联系人类型失败！")
-                }
-              })
+                  }
+                })
+              }else{this.$message.error('请先登录')}
+              
             },
 
               search() {
           // 搜索功能
-                var data=JSON.stringify({
+          if(this.$store.state.isLogin==true){
+               var data=JSON.stringify({
                     UId:this.$store.state.userId,
                     info:"ooo",
                     CName:this.formInline.CName,
@@ -203,7 +208,7 @@
                 if(this.CName==''&&this.CSex==""&&this.CType==''){
                   this.$message.error("输入不能都为空")
                 }else{
-                   this.$http.post('/user/contact/search',data).then(result=>{
+                   this.$http.post('user/contact/search',data).then(result=>{
                     if(result.body.status=="200"){
                       this.data6=result.body.message
                       this.formInline.CName ="";
@@ -214,6 +219,8 @@
                     }
                   })
                 }
+          }else{this.$message.error('请先登录')}
+               
                  
 
                       },
@@ -227,11 +234,13 @@
                 })
             },
             remove (index) {
-                this.data6.splice(index, 1);
-                this.$http.post('/user/contact/delete',{
-                  "CId":this.data[index].cid,
-                  "UId":this.$store.state.userId
-                }).then(result=>{
+              if(this.$store.state.isLogin==true){
+                 this.data6.splice(index, 1);
+                var dataDel = JSON.stringify({
+                  cId:this.data[index].cid,
+                  uId:this.$store.state.userId
+                })
+                this.$http.post('user/delete',dataDel).then(result=>{
                   if(result.body.status=="200"){
                     this.$message.success("删除成功")
                   }else{
@@ -244,20 +253,26 @@
                   showClose: true
                 })
               })
+              }else{this.$message.error('请先登录')}
+               
             },
           // 加载联系人信息
             getContacter(){
-              this.$http.post( '/user/contact/all',{
-                "info":"ooo",
-                "UId":this.$store.state.userId,
-                "ULoginName":this.$store.state.currentUser
-              }).then(result=>{
+              if(this.$store.state.isLogin==true){
+                var dataGet = JSON.stringify({
+                info:"ooo",
+                uId:this.$store.state.userId,
+                uLoginName:this.$store.state.currentUser
+              })
+              this.$http.post( 'user/contact/all',dataGet).then(result=>{
                 if(result.body.status=='200'){
                   this.data6=this.data6.concat(result.body.message)
                 }else{
                   this.$message.error('联系人列表加载失败!')
                 }
               })
+              }else{this.$message.error('请先登录')}
+              
             },
           
             

@@ -41,12 +41,12 @@ export default {
      data () {
              return {
                 formValidate: {
-                    uemail:'1111@qq.com',
-                    uid:'11',
-                    uloginName:'111',
-                    uname:'111',
-                    uphone:'111',
-                    usex:'111',
+                    uemail:'',
+                    uid:'',
+                    uloginName:'',
+                    uname:'',
+                    uphone:'',
+                    usex:'',
 
                     
                 },
@@ -79,7 +79,7 @@ export default {
                     var data = JSON.stringify({
 
                             uemail: "",
-                            uid: "",
+                            uid: this.$store.state.userId,
                             uloginName: this.$store.state.currentUser,
                             uname: "",
                             upassword: "",
@@ -87,7 +87,7 @@ export default {
                             usex: ""
                         // 发送全局的用户名和邮箱 密码  其他为本地的
                     })
-                    this.$http.post('/user/update',data).then(result=>{
+                    this.$http.post('user/update',data).then(result=>{
                         if(result.body.status=="200"){
                             this.formValidate=result.body.message
                             
@@ -95,23 +95,24 @@ export default {
                             this.$message.error('获取失败')
                         }
                     })
-                }
+                }else{this.$message.error("请先登录")}
                 
             },
             // 点击提交修改，并把返回的数据加载到页面中
             update (name) {
-                
-                this.$refs[name].validate((valid) => {
+                if(this.$store.state.isLogin){
+                    this.$refs[name].validate((valid) => {
                     if (valid) {
                         var params = JSON.stringify({
                             uemail:this.formValidate.uemail,
                             uid:this.formValidate.uid,
                             uloginName:this.formValidate.uloginName,
                             uname:this.formValidate.uname,
+                            upassword:"",
                             uphone:this.formValidate.uphone,
                             usex:this.formValidate.usex
                         })
-                        this.$http.post('/user/update',params).then(result=>{
+                        this.$http.post('user/update',params).then(result=>{
                             if(result.body.status=="200"){
                                 this.formValidate=result.body.message;
                                 this.$store.dispatch("setUser",result.body.message.uloginName)
@@ -125,6 +126,8 @@ export default {
                         this.$Message.error('输入有误，请重试');
                     }
                 })
+                }else{this.$message.error("请先登录")}
+                
             },
             handleReset (name) {
                 this.$refs[name].resetFields();

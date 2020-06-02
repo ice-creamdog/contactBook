@@ -8,6 +8,7 @@ export const userStatus = (state,user) => {
         state.currentUser =null;
         state.isLogin =false;
         state.token="";
+        state.userId=null
     }
 }
 export const userToken = (state,userToken) => {

@@ -79,7 +79,7 @@
             getCnoType(){
                 if(this.$store.state.isLogin==true){
                     var data = JSON.stringify({useId:this.$store.state.userId})
-                    this.$http.post('/user/type/all',data).then(result=>{
+                    this.$http.post('user/type/all',data).then(result=>{
                     if(result.body.status=="200"){
                     this.data1 = this.data1.concat(result.body.message)
                     
@@ -91,35 +91,42 @@
               
             },
             Delete(){
-                var delObj = JSON.stringify({
+                if(this.$store.state.isLogin==true){
+                    if(this.delInfo==""){
+                     this.$message.error("输入不能为空")
+                }else{
+                    var delObj = JSON.stringify({
                         typeComment: "",
                         typeId: "",
                         typeName: this.delInfo,
                         uid: this.$store.state.userId
                     })
-                if(this.delInfo==""){
-                     this.$message.error("输入不能为空")
-                }else{this.$http.post('/user/type/update',delObj).then(reult=>{
+                    this.$http.post('user/type/update',delObj).then(reult=>{
                     if(result.body.status=="200"){
                         this.$message.success("删除成功")
                         this.delInfo=""
                         this.getCnoType()
                     }else{
                         this.$message.error("删除失败，请确认要删除的类型是否正确")
-                    }
+                          }
                     
-                })}
+                     })
+                     }
+                }else{{this.$message.error('请先登录')}}
+                
+                
                 
             },
             Add(){
-                if(this.addInfo==''){
-                    this.$message.error("输入不能为空")
-                }else{
+                if(this.$store.state.isLogin==true){
+                    if(this.addInfo==''){
+                         this.$message.error("输入不能为空")
+                    }else{
                     var params = JSON.stringify({
                     typeName:this.addInfo,
-                    userId:this.$store.state.userId
+                    uId:this.$store.state.userId
                 })
-                    this.$http.post('/user/type/add',).then(result=>{
+                    this.$http.post('user/type/add',).then(result=>{
                     if(result.body.status=="200"){
                         this.$message.success("添加成功")
                         this.addInfo ='';
@@ -127,9 +134,11 @@
                     }else{
                         this.$message.error('添加失败')
                         this.addInfo ='';
+                         }
+                    })
                     }
-                })
-                }
+                
+                }else{{this.$message.error('请先登录')}}
                 
             }
         }
