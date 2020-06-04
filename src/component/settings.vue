@@ -56,8 +56,8 @@ export default {
     methods:{
         logOut(){
             if(this.$store.state.isLogin==true){}else{this.$message.error('请先登录')}
-            var data = JSON.stringify({uId:this.$store.state.userId})
-            this.$http.post(this.$router.push({path:'user/logout' ,query:{id:this.$store.state.userId}}),data).then(result=>{
+            
+            this.$http.post('user/logout' ,{uId:this.$store.state.userId},{emulateJSON:true}).then(result=>{
 
                                 sessionStorage.setItem("userName",null)
                                 sessionStorage.setItem("setToken","");
@@ -71,8 +71,8 @@ export default {
             
             if(this.$store.state.isLogin==true){
                 this.visble=false;
-                var data = JSON.stringify({uLoginName:this.$store.state.currentUser,uPassword:""})
-                this.$http.post('user/deleta',data).then(result=>{
+                var data = JSON.stringify()
+                this.$http.post('user/deleta',{uLoginName:this.$store.state.currentUser,uPassword:""},{emulateJSON:true}).then(result=>{
                 if(result.body.status=="200"){
 
                     clearTimeout(timer);

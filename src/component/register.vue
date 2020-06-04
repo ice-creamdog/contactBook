@@ -54,8 +54,8 @@ import { setTimeout } from 'timers';
             register (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        var data = JSON.stringify({uLoginName:this.formCustom.loginName,uPsaaword:this.formCustom.password,uEmail:this.formCustom.email})
-                        this.$http.post('register',data).then(result=>{
+                        
+                        this.$http.post('api/register',{uLoginName:this.formCustom.loginName,uPsaaword:this.formCustom.password,uEmail:this.formCustom.email},{emulateJSON:true}).then(result=>{
                             if(result.body.status=="200"){
                                 
                                 this.formCustom.loginName="";

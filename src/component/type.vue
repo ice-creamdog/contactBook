@@ -30,12 +30,16 @@
                             </Menu>
                         </Sider>
                         <Content :style="{padding: '20px 100px', minHeight: '280px', background: '#fff'}">
-                            <Table :columns="columns1" :data="data1"></Table>
+                            <Table stripe border="" :columns="columns1" :data="data1">
+                                
+                                 
+                            </Table>
+                             
                         </Content>
                     </Layout>
                 </Content>
             </Layout>
-            <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
+            <Footer class="layout-footer-center">2011-2020 &copy; TalkingData</Footer>
         </Layout>
     </div>
 </div>
@@ -56,6 +60,40 @@
                     {
                         title: '类型说明',
                         key: 'typeComment'
+                    },{
+                        title: 'Action',
+                        key: 'action',
+                        width: 150,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.update(params.index)
+                                        }
+                                    }
+                                }, 'View'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.Remove(params.index)
+                                        }
+                                    }
+                                }, 'Delete')
+                            ]);
+                        }
                     }
                 ],
                 data1: [
@@ -65,6 +103,25 @@
                         typeComment: 'New York No. 1 Lake Park',
                         
                     },
+                    {
+                        typeName: 'John Brown',
+                        typeId: 18,
+                        typeComment: 'New York No. 1 Lake Park',
+                        
+                    },
+                    {
+                        typeName: 'John Brown',
+                        typeId: 18,
+                        typeComment: 'New York No. 1 Lake Park',
+                        
+                    },
+                    {
+                        typeName: 'John Brown',
+                        typeId: 18,
+                        typeComment: 'New York No. 1 Lake Park',
+                        
+                    }
+
                    
                 ],
                 delInfo:"",
@@ -78,8 +135,8 @@
         methods:{
             getCnoType(){
                 if(this.$store.state.isLogin==true){
-                    var data = JSON.stringify({useId:this.$store.state.userId})
-                    this.$http.post('user/type/all',data).then(result=>{
+                    
+                    this.$http.post('user/type/all',{useId:this.$store.state.userId},{emulateJSON:true}).then(result=>{
                     if(result.body.status=="200"){
                     this.data1 = this.data1.concat(result.body.message)
                     
@@ -90,6 +147,26 @@
               })}
               
             },
+               Remove (index) {
+                 this.data1.splice(index, 1);
+                 var delObj = JSON.stringify({
+                        typeComment: "",
+                        typeId: "",
+                        typeName: this.delInfo,
+                        uid: this.$store.state.userId
+                    })
+                    this.$http.post('user/type/update',delObj).then(reult=>{
+                    if(result.body.status=="200"){
+                        this.$message.success("删除成功")
+                        this.delInfo=""
+                        this.getCnoType()
+                    }else{
+                        this.$message.error("删除失败，请确认要删除的类型是否正确")
+                          }
+                    
+                     })
+            },                  
+
             Delete(){
                 if(this.$store.state.isLogin==true){
                     if(this.delInfo==""){
@@ -117,16 +194,22 @@
                 
                 
             },
+            update(index) {
+                this.$Modal.info({
+                    title: 'User Info',
+                    content: `Name：${this.data1[index].typeName}<br>Age：${this.data1[index].typeId}<br>Address：${this.data1[index].typeComment}`
+                })
+            },
             Add(){
                 if(this.$store.state.isLogin==true){
                     if(this.addInfo==''){
                          this.$message.error("输入不能为空")
                     }else{
-                    var params = JSON.stringify({
+                    
+                    this.$http.post('user/type/add',{
                     typeName:this.addInfo,
                     uId:this.$store.state.userId
-                })
-                    this.$http.post('user/type/add',).then(result=>{
+                },{emulateJSON:true}).then(result=>{
                     if(result.body.status=="200"){
                         this.$message.success("添加成功")
                         this.addInfo ='';

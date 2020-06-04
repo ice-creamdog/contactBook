@@ -181,8 +181,8 @@
             
             getCType(){
               if(this.$store.state.isLogin==true){
-                var dataType = JSON.stringify({useId:this.$store.state.userId})
-                this.$http.post('user/type/all',dataType).then(result=>{
+               
+                this.$http.post('user/type/all',{useId:this.$store.state.userId},{emulateJSON:true}).then(result=>{
                 if(result.body.status=="200"){
                   this.formInline.CType=this.formInline.CType.concat(result.body.message)
                   
@@ -198,17 +198,17 @@
               search() {
           // 搜索功能
           if(this.$store.state.isLogin==true){
-               var data=JSON.stringify({
+               
+                if(this.CName==''&&this.CSex==""&&this.CType==''){
+                  this.$message.error("输入不能都为空")
+                }else{
+                   this.$http.post('user/contact/search',{
                     UId:this.$store.state.userId,
                     info:"ooo",
                     CName:this.formInline.CName,
                     CSex:this.formInline.CSex,
                     CType:this.formInline.CtypeId
-                  })
-                if(this.CName==''&&this.CSex==""&&this.CType==''){
-                  this.$message.error("输入不能都为空")
-                }else{
-                   this.$http.post('user/contact/search',data).then(result=>{
+                  },{emulateJSON:true}).then(result=>{
                     if(result.body.status=="200"){
                       this.data6=result.body.message
                       this.formInline.CName ="";
@@ -236,11 +236,11 @@
             remove (index) {
               if(this.$store.state.isLogin==true){
                  this.data6.splice(index, 1);
-                var dataDel = JSON.stringify({
+                
+                this.$http.post('user/delete',{
                   cId:this.data[index].cid,
                   uId:this.$store.state.userId
-                })
-                this.$http.post('user/delete',dataDel).then(result=>{
+                },{emulateJSON:true}).then(result=>{
                   if(result.body.status=="200"){
                     this.$message.success("删除成功")
                   }else{
@@ -259,12 +259,12 @@
           // 加载联系人信息
             getContacter(){
               if(this.$store.state.isLogin==true){
-                var dataGet = JSON.stringify({
+                
+              this.$http.post( 'user/contact/all',{
                 info:"ooo",
                 uId:this.$store.state.userId,
                 uLoginName:this.$store.state.currentUser
-              })
-              this.$http.post( 'user/contact/all',dataGet).then(result=>{
+              },{emulateJSON:true}).then(result=>{
                 if(result.body.status=='200'){
                   this.data6=this.data6.concat(result.body.message)
                 }else{
