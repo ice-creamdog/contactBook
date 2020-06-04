@@ -63,21 +63,13 @@ import { isLogin } from '../vuex/getters';
                                 this.formInline.loginName="";
                                 this.formInline.password="";
                                 this.loginIng=true;
-                                this.$message({
-                                    message:"登录成功",
-                                    type: 'success'
-                                    });
-                                sessionStorage.setItem("userName",result.body.message.uloginName)
-                                sessionStorage.setItem("setToken",result.data.body.token);
-                                this.$store.dispatch("setUser",result.body.message.uloginName)
-                                this.$store.dispatch("setToken",result.data.body.token)
+                                this.$message.success("登录成功");
+                                sessionStorage.setItem("userName",result.body.message.uloginName)                              
+                                this.$store.dispatch("setUser",result.body.message.uloginName)                              
                                 this.$store.dispatch("setId",result.body.message.uid)
                                 this.$router.push({path:'/users'})
                             }else{
-                                this.$message({
-                                    message:'用户名或者密码错误，请重试',
-                                    type:'error'
-                                })
+                                this.$message.error("登录失败，请重试")
                             }
                     })
                     } else {

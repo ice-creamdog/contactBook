@@ -77,10 +77,10 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.update(params.index)
+                                            this.update()
                                         }
                                     }
-                                }, 'View'),
+                                }, '更新'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
@@ -91,7 +91,7 @@
                                             this.Remove(params.index)
                                         }
                                     }
-                                }, 'Delete')
+                                }, '删除')
                             ]);
                         }
                     }
@@ -194,10 +194,22 @@
                 
                 
             },
-            update(index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    content: `Name：${this.data1[index].typeName}<br>Age：${this.data1[index].typeId}<br>Address：${this.data1[index].typeComment}`
+            update () {
+                this.$Modal.confirm({
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: this.value,
+                                autofocus: true,
+                                placeholder: 'Please enter your name...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    this.value = val;
+                                }
+                            }
+                        })
+                    }
                 })
             },
             Add(){

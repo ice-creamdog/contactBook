@@ -4,7 +4,7 @@ export const userStatus = (state,user) => {
         state.isLogin = true;
     }else if(user ==null){
         sessionStorage.setItem("userName",null);
-        sessionStorage.setItem("userToken","");
+        
         state.currentUser =null;
         state.isLogin =false;
         state.token="";
@@ -22,9 +22,9 @@ export const userToken = (state,userToken) => {
   export const userID = (state,userId) => {
     if(userId){
         state.userId = userId;
-    }else if(user ==null){
+    }else if(userId ==null){
         sessionStorage.setItem("userName",null);
-        sessionStorage.setItem("userToken","");
+        
         state.userId=null;
         state.currentUser =null;
         state.isLogin =false;
