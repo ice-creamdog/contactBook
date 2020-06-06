@@ -184,7 +184,7 @@
                this.$http({
                             method:'post',
                             url:'user/type/all',
-                            params:{useId:this.$store.state.userId},
+                            params:{userId:localStorage.getItem("userId")},
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
                             }).then(result=>{
@@ -202,34 +202,31 @@
 
               search() {
           // 搜索功能
-          if(localStorage.getItem("userToken")!=''){
-               
-                if(this.CName==''&&this.CSex==""&&this.CType==''){
-                  this.$message.error("输入不能都为空")
-                }else{
-                  this.$http({
-                            method:'post',
-                            url:'user/contact/search',
-                            params:{  UId:this.$store.state.userId,  info:"ooo",  CName:this.formInline.CName,  CSex:this.formInline.CSex,  CType:this.formInline.CtypeId
-},
-                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
-                            
-                            }).then(result=>{
-                    if(result.body.status=="200"){
-                      this.data6=result.body.message
-                      this.formInline.CName ="";
-                      this.formInline.Ctypeid ="",
-                      this.formInline.CSex =""
-                    }else{
-                      this.$message.error("查询联系人失败")
-                    }
-                  })
-                }
-          }else{this.$message.error('请先登录')}
-               
-                 
-
-                      },
+                    if(localStorage.getItem("userToken")!=''){
+                        
+                          if(this.CName==''&&this.CSex==""&&this.CType==''){
+                            this.$message.error("输入不能都为空")
+                          }else{
+                            this.$http({
+                                      method:'post',
+                                      url:'user/contact/search',
+                                      params:{  UId:localStorage.getItem("userId"),  info:"ooo",  CName:this.formInline.CName,  CSex:this.formInline.CSex,  CType:this.formInline.CtypeId
+          },
+                                      headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                                      
+                                      }).then(result=>{
+                              if(result.body.status=="200"){
+                                this.data6=result.body.message
+                                this.formInline.CName ="";
+                                this.formInline.Ctypeid ="",
+                                this.formInline.CSex =""
+                              }else{
+                                this.$message.error("查询联系人失败")
+                              }
+                            })
+                          }
+                    }else{this.$message.error('请先登录')}
+                    },
       //添加联系人之后重新新加载
           //删除联系人
           //修改联系人
@@ -240,13 +237,13 @@
                 })
             },
             remove (index) {
-              if(this.$store.state.isLogin==true){
+              if(localStorage.getItem('userToken')!=''){
                  this.data6.splice(index, 1);
-                
-                this.$http.post('user/delete',{
-                  cId:this.data[index].cid,
-                  uId:this.$store.state.userId
-                },{emulateJSON:true}).then(result=>{
+                this.$http({
+                            method:'post',
+                            url:'uuser/contact/delete',
+                            params:{cId:this.data[index].cid,uId:localStorage.getItem("userId")},
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'} }).then(result=>{
                   if(result.body.status=="200"){
                     this.$message.success("删除成功")
                   }else{
@@ -265,15 +262,8 @@
           // 加载联系人信息
             getContacter(){
               if(localStorage.getItem('userToken')!=''){
-                console.log(localStorage.getItem("userToken"))
-                console.log(this.$store.state.token),
-                this.$http({
-                            method:'post',
-                            url:'user/contact/all',
-                            data:{   uId:this.$store.state.userId,  uLoginName:this.$store.state.currentUser},
-                            
-                            
-                            }).then(result=>{
+                var data = JSON.stringify({   uId:localStorage.getItem("userId"),  uLoginName:localStorage.getItem('userName')})
+                this.$http.post('user/contact/all',data).then(result=>{
                 if(result.body.status=='200'){
                   this.data6=this.data6.concat(result.body.message)
                 }else{

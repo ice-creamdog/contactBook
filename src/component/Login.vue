@@ -30,8 +30,6 @@ import store from '../vuex/store.js'
                    loginName: '',
                     password: ''
                 },
-                loginIng:false,
-                message:{},
                 ruleInline: {
                    loginName: [
                         { required: true, message: 'Please fill in the user name', trigger: 'blur' }
@@ -65,33 +63,17 @@ import store from '../vuex/store.js'
                             }).then(result=>{
                             
                             if(result.body.status==="200"){
-                                console.log(51)
-                                this.message=result.body.status;
                                 this.formInline.loginName="";
                                 this.formInline.password="";
-                                console.log(result.body)
-                                console.log(result)
-                                console.log(result.body.message.uLoginName)
-                                console.log(result.body.token)
-                                console.log(52)
                                 localStorage.setItem("userName",result.body.message.uLoginName)
                                 localStorage.setItem("userToken",result.body.token);
                                 localStorage.setItem("userId",result.body.message.uId)
-                                console.log(53)
                                 this.$store.dispatch("setUser",result.body.message.uLoginName)
                                 this.$store.dispatch("setToken",result.body.token)
                                 this.$store.dispatch("setId",result.body.message.uId)
-
-                                console.log(54)
-                                
-                                console.log(5)
                                 this.$router.push({path:'/users'})
-                                console.log(55)
                                 this.$message.success("登录成功");
                                 this.$router.push({path:'/users'})
-                                console.log(this.$store.state.isLogin)
-                                console.log(this.$store.state.currentUser)
-                                
                             }else{
                                 this.$message.error("登录失败")
                                 this.$store.dispatch("setUser",null)

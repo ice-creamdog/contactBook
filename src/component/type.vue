@@ -134,11 +134,11 @@
         },
         methods:{
             getCnoType(){
-                if(this.$store.state.isLogin==true){
+                if(localStorage.getItem('userToken')!=''){
                     this.$http({
                             method:'post',
                             url:'user/type/all',
-                            params:{useId:this.$store.state.userId},
+                            params:{useId:localStorage.getItem("userId")},
 
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
@@ -159,7 +159,7 @@
                         typeComment: "",
                         typeId: "",
                         typeName: this.delInfo,
-                        uid: this.$store.state.userId
+                        uid: localStorage.getItem("userId")
                     })
                     this.$http.post('user/type/update',delObj).then(reult=>{
                     if(result.body.status=="200"){
@@ -174,7 +174,7 @@
             },                  
 
             Delete(){
-                if(this.$store.state.isLogin==true){
+                if(localStorage.getItem('userToken')!=''){
                     if(this.delInfo==""){
                      this.$message.error("输入不能为空")
                 }else{
@@ -182,7 +182,7 @@
                         typeComment: "",
                         typeId: "",
                         typeName: this.delInfo,
-                        uid: this.$store.state.userId
+                        uid: localStorage.getItem("userId")
                     })
                     this.$http.post('user/type/update',delObj).then(reult=>{
                     if(result.body.status=="200"){
@@ -219,18 +219,14 @@
                 })
             },
             Add(){
-                if(this.$store.state.isLogin==true){
+                if(localStorage.getItem('userToken')!=''){
                     if(this.addInfo==''){
                          this.$message.error("输入不能为空")
                     }else{
                         this.$http({
                             method:'post',
                             url:'user/type/add',
-                            params:{
-                    typeName:this.addInfo,
-                    uId:this.$store.state.userId
-                },
-
+                            params:{typeName:this.addInfo,uId:localStorage.getItem("userId") },
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
                             }).then(result=>{

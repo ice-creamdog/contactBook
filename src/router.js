@@ -32,6 +32,18 @@ var router = new VueRouter({
     linkActiveClass:'mui-active'
   });
   
-    
+    router.beforeEach((to, from, next) => {
+      if (to.path === '/login') {
+        next();
+      } else {
+        let token = localStorage.getItem('userToken');
+     
+        if (token === 'null' || token === '') {
+          next('/login');
+        } else {
+          next();
+        }
+      }
+    });
 
   export default router

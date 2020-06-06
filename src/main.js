@@ -21,17 +21,17 @@ import 'element-ui/lib/index.js'
 import  'element-ui/lib/theme-chalk/index.css'
 
 
-Vue.http.options.root='http://112.74.86.158:8646';
+Vue.http.options.root='http://120.78.169.148:8646';
 
 Vue.http.headers.common['token'] = store.state.token
 
 Vue.http.interceptors.push(function (request, next) {
   // modify url  本地调试使用本地ip地址
-  request.credentials = true;
+  
   // modify headers
   if (store.state.token) {
     
-     
+      request.headers.set('token', `${store.state.token}`);
   }
   // request.headers.set('X-CSRF-TOKEN', 'TOKEN');
   next((response) => {
