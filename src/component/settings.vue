@@ -50,16 +50,16 @@ export default {
         return {
             visible: false,
             Users:{},
-            user:this.$store.state.currentUser
+            user:localStorage.getItem('userName')
         }
     },
     methods:{
         logOut(){
-            if(this.$store.state.isLogin==true){}else{this.$message.error('请先登录')}
+            if(localStorage.getItem('userToken')!=''){}else{this.$message.error('请先登录')}
             this.$http({
                             method:'post',
                             url:'user/logout',
-                            params:{uId:this.$store.state.userId},
+                            params:{uId:localStorage.getItem('userId')},
 
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
@@ -75,11 +75,11 @@ export default {
         },
         deleteUser(){
             
-            if(this.$store.state.isLogin==true){
+            if(localStorage.getItem('userToken')!=''){
                 this.$http({
                             method:'post',
                             url:'user/deleta',
-                            params:{uLoginName:this.$store.state.currentUser,uPassword:""},
+                            params:{uLoginName:localStorage.getItem('userName'),uPassword:""},
 
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             

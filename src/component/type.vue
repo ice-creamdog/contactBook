@@ -138,7 +138,7 @@
                     this.$http({
                             method:'post',
                             url:'user/type/all',
-                            params:{useId:localStorage.getItem("userId")},
+                            params:{uId:localStorage.getItem("userId")},
 
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
@@ -161,7 +161,7 @@
                         typeName: this.delInfo,
                         uid: localStorage.getItem("userId")
                     })
-                    this.$http.post('user/type/update',delObj).then(reult=>{
+                    this.$http.post('/user/type/delete',delObj).then(reult=>{
                     if(result.body.status=="200"){
                         this.$message.success("删除成功")
                         this.delInfo=""
@@ -184,7 +184,7 @@
                         typeName: this.delInfo,
                         uid: localStorage.getItem("userId")
                     })
-                    this.$http.post('user/type/update',delObj).then(reult=>{
+                    this.$http.post('/user/type/delete',delObj).then(reult=>{
                     if(result.body.status=="200"){
                         this.$message.success("删除成功")
                         this.delInfo=""

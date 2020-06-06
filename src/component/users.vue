@@ -184,7 +184,7 @@
                this.$http({
                             method:'post',
                             url:'user/type/all',
-                            params:{userId:localStorage.getItem("userId")},
+                            params:{uId:localStorage.getItem("userId")},
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
                             }).then(result=>{
@@ -210,7 +210,7 @@
                             this.$http({
                                       method:'post',
                                       url:'user/contact/search',
-                                      params:{  UId:localStorage.getItem("userId"),  info:"ooo",  CName:this.formInline.CName,  CSex:this.formInline.CSex,  CType:this.formInline.CtypeId
+                                      params:{  uId:localStorage.getItem("userId"),  info:"ooo",  CName:this.formInline.CName,  CSex:this.formInline.CSex,  CType:this.formInline.CtypeId
           },
                                       headers:{'Content-Type':'application/x-www-form-urlencoded'}
                                       

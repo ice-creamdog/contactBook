@@ -23,6 +23,9 @@
             <FormItem label="联系人工作" prop="cwork">
                 <Input type="text" v-model="formCustom.cwork"></Input>
             </FormItem>
+            <FormItem label="联系人id" prop="cid">
+                <Input type="text" v-model="formCustom.cid"></Input>
+            </FormItem>
         <FormItem>
             <Button type="primary" @click="add('formCustom')">保存</Button>
             <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
@@ -45,6 +48,7 @@
                     csex:'',
                     ctype:'',
                     cwork:'',
+                    cid:""
                 },
                 ruleCustom: {
                     caddress:[
@@ -69,28 +73,32 @@
                     cwork:[
                         { required: false, message: 'Please fill in the password.', trigger: 'blur' },
                     ],
+                    cid:[
+                        { required: false, message: 'Please fill in the password.', trigger: 'blur' },
+                    ],
                     
                 }
             }
         },
         methods: {
             add (name) {
-                if(this.$store.state.isLogin){
+                if(localStorage.getItem('userToken')!=''){
                     this.$refs[name].validate((valid) => {
                     if (valid) {
                         var params = JSON.stringify({
-                            caddress:name.caddress,
-                            cname:name.cname,
-                            cphone:name.cphone,
-                            cqq:name.cqq,
-                            csex:name.csex,
-                           ctype:name.ctype,
-                           cwork:name.cwork,
-                           uid:this.$store.state.userId
+                            caddress:this.formCustom.caddress,
+                            cname:this.formCustom.cname,
+                            cphone:this.formCustom.cphone,
+                            cqq:this.formCustom.cqq,
+                            csex:this.formCustom.csex,
+                           ctype:this.formCustom.ctype,
+                           cwork:this.formCustom.cwork,
+                           cid:this.formCustom.cid,
+                           uid:localStorage.getItem("userId")
                         })
-                        this.$http.post('/user/contact/update',).then(res=>{
+                        this.$http.post('user/contact/insert',params).then(res=>{
                             if(res.body.status=='200'){
-                                clearTimeout(timer)
+                                
                                 this.formCustom.caddress="";
                                 this.formCustom.cname="";
                                 this.formCustom.cphone="";
@@ -98,10 +106,10 @@
                                 this.formCustom.csex="";
                                 this.formCustom.ctype="";
                                 this.formCustom.cwork="";
+                                this.formCustom.cid="";
                                 this.$Message.success('添加成功!');
-                                var timer=setTimeout(()=>{
-                                    this.$router.push({path:'/user'})
-                                },1000)
+                                this.$router.push({path:'/users'});
+                                
                             }else{
                                 this.$Message.error('添加失败，请重试');
                             }
