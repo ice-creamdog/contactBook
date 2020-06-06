@@ -52,40 +52,44 @@ import { setTimeout } from 'timers';
         },
         methods: {
             register (name) {
+                this.$message.success('Success!');
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        
-                        this.$http.post('api/register',{uLoginName:this.formCustom.loginName,uPsaaword:this.formCustom.password,uEmail:this.formCustom.email},{emulateJSON:true}).then(result=>{
+                        console.log(1)
+                        this.$http({
+                            method:'post',
+                            url:'register',
+                            params:{uEmail:this.formCustom.email,uLoginName:this.formCustom.loginName,uPassword:this.formCustom.password},
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
+                            console.log(4)
                             if(result.body.status=="200"){
-                                
+                                console.log(2)
                                 this.formCustom.loginName="";
                                 this.formCustom.password="";
                                 this.formCustom.email="";
-                                this.$Message.success('Success!');
-                                this.backToLogin();
-                            }else{
-                                this.$Message.error('注册失败，请重试');
+                                this.$message.success('Success!');
+                                this.$router.push({path:'/login'})
+                            }else if(result.body.status=="400"){
+                                console.log("密码不能为空")
+                            }
+                            else{
+                                console.log(3)
+                                this.$message.error('注册失败，请重试');
                             }
                         })
                         
                     } else {
-                        this.$Message.error('输入格式有误，请重试');
+                        this.$message.error('输入格式有误，请重试');
                     }
-                }).catch(function (err) {
-                console.log(err);
-                this.$message.error({
-                  message: err,
-                  showClose: true
                 })
-              })
           }
             },
             handleReset (name) {
                 this.$refs[name].resetFields();
             },
-            backToLogin() {
-          this.$router.push({path:'/login'})
-        }
+            
     }
     
 

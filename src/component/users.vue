@@ -180,9 +180,14 @@
         methods: {
             
             getCType(){
-              if(this.$store.state.isLogin==true){
-               
-                this.$http.post('user/type/all',{useId:this.$store.state.userId},{emulateJSON:true}).then(result=>{
+              if(localStorage.getItem('userToken')!=''){
+               this.$http({
+                            method:'post',
+                            url:'user/type/all',
+                            params:{useId:this.$store.state.userId},
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
                 if(result.body.status=="200"){
                   this.formInline.CType=this.formInline.CType.concat(result.body.message)
                   
@@ -197,18 +202,19 @@
 
               search() {
           // 搜索功能
-          if(this.$store.state.isLogin==true){
+          if(localStorage.getItem("userToken")!=''){
                
                 if(this.CName==''&&this.CSex==""&&this.CType==''){
                   this.$message.error("输入不能都为空")
                 }else{
-                   this.$http.post('user/contact/search',{
-                    UId:this.$store.state.userId,
-                    info:"ooo",
-                    CName:this.formInline.CName,
-                    CSex:this.formInline.CSex,
-                    CType:this.formInline.CtypeId
-                  },{emulateJSON:true}).then(result=>{
+                  this.$http({
+                            method:'post',
+                            url:'user/contact/search',
+                            params:{  UId:this.$store.state.userId,  info:"ooo",  CName:this.formInline.CName,  CSex:this.formInline.CSex,  CType:this.formInline.CtypeId
+},
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
                     if(result.body.status=="200"){
                       this.data6=result.body.message
                       this.formInline.CName ="";
@@ -258,13 +264,16 @@
             },
           // 加载联系人信息
             getContacter(){
-              if(this.$store.state.isLogin==true){
-                
-              this.$http.post( 'user/contact/all',{
-                info:"ooo",
-                uId:this.$store.state.userId,
-                uLoginName:this.$store.state.currentUser
-              },{emulateJSON:true}).then(result=>{
+              if(localStorage.getItem('userToken')!=''){
+                console.log(localStorage.getItem("userToken"))
+                console.log(this.$store.state.token),
+                this.$http({
+                            method:'post',
+                            url:'user/contact/all',
+                            data:{   uId:this.$store.state.userId,  uLoginName:this.$store.state.currentUser},
+                            
+                            
+                            }).then(result=>{
                 if(result.body.status=='200'){
                   this.data6=this.data6.concat(result.body.message)
                 }else{

@@ -135,8 +135,14 @@
         methods:{
             getCnoType(){
                 if(this.$store.state.isLogin==true){
-                    
-                    this.$http.post('user/type/all',{useId:this.$store.state.userId},{emulateJSON:true}).then(result=>{
+                    this.$http({
+                            method:'post',
+                            url:'user/type/all',
+                            params:{useId:this.$store.state.userId},
+
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
                     if(result.body.status=="200"){
                     this.data1 = this.data1.concat(result.body.message)
                     
@@ -217,11 +223,17 @@
                     if(this.addInfo==''){
                          this.$message.error("输入不能为空")
                     }else{
-                    
-                    this.$http.post('user/type/add',{
+                        this.$http({
+                            method:'post',
+                            url:'user/type/add',
+                            params:{
                     typeName:this.addInfo,
                     uId:this.$store.state.userId
-                },{emulateJSON:true}).then(result=>{
+                },
+
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
                     if(result.body.status=="200"){
                         this.$message.success("添加成功")
                         this.addInfo ='';

@@ -13,6 +13,8 @@ import update from './component/update.vue'
 import type from './component/type.vue'
 
 
+
+
 var router = new VueRouter({
     routes: [
       {path:'/',redirect: '/home'},
@@ -29,5 +31,7 @@ var router = new VueRouter({
     ],
     linkActiveClass:'mui-active'
   });
+  
+    
 
   export default router

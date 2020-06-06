@@ -56,11 +56,17 @@ export default {
     methods:{
         logOut(){
             if(this.$store.state.isLogin==true){}else{this.$message.error('请先登录')}
-            
-            this.$http.post('user/logout' ,{uId:this.$store.state.userId},{emulateJSON:true}).then(result=>{
+            this.$http({
+                            method:'post',
+                            url:'user/logout',
+                            params:{uId:this.$store.state.userId},
+
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
 
                                 sessionStorage.setItem("userName",null)
-                                sessionStorage.setItem("setToken","");
+                                sessionStorage.setItem("userToken","");
                                 this.$store.dispatch("setUser",null)
                                 this.$store.dispatch("setToken","")
                                 this.$store.dispatch("setId",null)
@@ -70,9 +76,14 @@ export default {
         deleteUser(){
             
             if(this.$store.state.isLogin==true){
-                this.visble=false;
-                var data = JSON.stringify()
-                this.$http.post('user/deleta',{uLoginName:this.$store.state.currentUser,uPassword:""},{emulateJSON:true}).then(result=>{
+                this.$http({
+                            method:'post',
+                            url:'user/deleta',
+                            params:{uLoginName:this.$store.state.currentUser,uPassword:""},
+
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
                 if(result.body.status=="200"){
 
                     clearTimeout(timer);

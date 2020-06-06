@@ -22,7 +22,7 @@ import { isLogin } from '../vuex/getters';
 </template>
 
 <script>
-
+import store from '../vuex/store.js'
     export default {
         data () {
             return {
@@ -55,21 +55,46 @@ import { isLogin } from '../vuex/getters';
                 this.$refs[name].validate((valid) => {
                     
                     if (valid) {
-                        
-                        this.$http.post('user/login',{uLoginName:this.formInline.loginName,uPassword:this.formInline.password},{emulateJSON:true}).then(result=>{
+                        this.$http({
+                            method:'post',
+                            url:'user/login',
+                            params:{uLoginName:this.formInline.loginName,uPassword:this.formInline.password},
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                            
+                            
+                            }).then(result=>{
                             
                             if(result.body.status==="200"){
+                                console.log(51)
                                 this.message=result.body.status;
                                 this.formInline.loginName="";
                                 this.formInline.password="";
-                                this.loginIng=true;
-                                this.$message.success("登录成功");
-                                sessionStorage.setItem("userName",result.body.message.uloginName)                              
-                                this.$store.dispatch("setUser",result.body.message.uloginName)                              
-                                this.$store.dispatch("setId",result.body.message.uid)
+                                console.log(result.body)
+                                console.log(result)
+                                console.log(result.body.message.uLoginName)
+                                console.log(result.body.token)
+                                console.log(52)
+                                localStorage.setItem("userName",result.body.message.uLoginName)
+                                localStorage.setItem("userToken",result.body.token);
+                                localStorage.setItem("userId",result.body.message.uId)
+                                console.log(53)
+                                this.$store.dispatch("setUser",result.body.message.uLoginName)
+                                this.$store.dispatch("setToken",result.body.token)
+                                this.$store.dispatch("setId",result.body.message.uId)
+
+                                console.log(54)
+                                
+                                console.log(5)
                                 this.$router.push({path:'/users'})
+                                console.log(55)
+                                this.$message.success("登录成功");
+                                this.$router.push({path:'/users'})
+                                console.log(this.$store.state.isLogin)
+                                console.log(this.$store.state.currentUser)
+                                
                             }else{
-                                this.$message.error("登录失败，请重试")
+                                this.$message.error("登录失败")
+                                this.$store.dispatch("setUser",null)
                             }
                     })
                     } else {
