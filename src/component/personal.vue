@@ -4,22 +4,22 @@
            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                 
                 <FormItem label="用户邮箱" prop="uemail">
-                    <Input v-model="formValidate.uemail" placeholder="Enter your e-mail"></Input>
+                    <Input v-model="formValidate.uEmail" placeholder="Enter your e-mail"></Input>
                 </FormItem>
                 <FormItem label="用户id" >
-                    <Input v-model="formValidate.uid" placeholder="Enter your e-mail" :disabled="true"></Input>
+                    <Input v-model="formValidate.uId" placeholder="Enter your e-mail" :disabled="true"></Input>
                 </FormItem>
                 <FormItem label="用户昵称" prop="uloginName">
-                    <Input v-model="formValidate.uloginName" placeholder="Enter your e-mail"></Input>
+                    <Input v-model="formValidate.uLoginName" placeholder="Enter your e-mail"></Input>
                 </FormItem>
                 <FormItem label="用户名" prop="uname">
-                    <Input v-model="formValidate.uname" placeholder="Enter your name"></Input>
+                    <Input v-model="formValidate.uName" placeholder="Enter your name"></Input>
                 </FormItem>
                 <FormItem label="用户电话" prop="uphone">
-                    <Input v-model="formValidate.uphone" placeholder="Enter your tel"></Input>
+                    <Input v-model="formValidate.uPhone" placeholder="Enter your tel"></Input>
                 </FormItem>
                 <FormItem label="用户性别" prop="usex">
-                    <Input v-model="formValidate.usex" placeholder="Enter your tel"></Input>
+                    <Input v-model="formValidate.uSex" placeholder="Enter your tel"></Input>
                 </FormItem>
                 
                 
@@ -41,25 +41,25 @@ export default {
      data () {
              return {
                 formValidate: {
-                    uemail:'',
-                    uid:'',
-                    uloginName:'',
-                    uname:'',
-                    uphone:'',
-                    usex:'',
+                    uEmail:'',
+                    uId:'',
+                    uLoginName:'',
+                    uName:'',
+                    uPhone:'',
+                    uSex:' ',
 
                     
                 },
                 ruleValidate: {
                     uname: [
-                        { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+                        { required: false, message: 'The name cannot be empty', trigger: 'blur' }
                     ],
                     uemail: [
-                        { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
+                        { required: false, message: 'Mailbox cannot be empty', trigger: 'blur' },
                         { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
                     ],
                     uloginName: [
-                        { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+                        { required: false, message: 'The name cannot be empty', trigger: 'blur' }
                     ],
                     
                 }
@@ -74,21 +74,23 @@ export default {
             // 初次登录获取用户信息，并加载到页面中
             getUserInfo(){
                 //后面判断是否登陆（登陆标志），不登陆就返回空
-                if(this.$store.state.isLogin){
+                if(localStorage.getItem('userToken')!=''){
                     //根据用户信息全局的用户名和用户密码获取全部信息
                     var data = JSON.stringify({
 
-                            uemail: "",
-                            uid: this.$store.state.userId,
-                            uloginName: this.$store.state.currentUser,
-                            uname: "",
-                            upassword: "",
-                            uphone: "",
-                            usex: ""
+                            uEmail: localStorage.getItem("userEmail"),
+                            uId:localStorage.getItem("userId"),
+                            uLoginName: localStorage.getItem('userName'),
+                            uName: localStorage.getItem('Name'),
+                            uPassword: '',
+                            uPhone:localStorage.getItem('userPhone'),
+                            uSex: "男"
                         // 发送全局的用户名和邮箱 密码  其他为本地的
                     })
                     this.$http.post('user/update',data).then(result=>{
                         if(result.body.status=="200"){
+                            localStorage.setItem('Name',result.body.message.uName)
+                            localStorage.setItem('userPhone',result.body.message.uPhone)
                             this.formValidate=result.body.message
                             
                         }else{
@@ -99,23 +101,27 @@ export default {
                 
             },
             // 点击提交修改，并把返回的数据加载到页面中
-            update (name) {
-                if(this.$store.state.isLogin){
+            updateInfo (name) {
+                if(localStorage.getItem('userToken')!=''){
                     this.$refs[name].validate((valid) => {
                     if (valid) {
                         var params = JSON.stringify({
-                            uemail:this.formValidate.uemail,
-                            uid:this.formValidate.uid,
-                            uloginName:this.formValidate.uloginName,
-                            uname:this.formValidate.uname,
-                            upassword:"",
-                            uphone:this.formValidate.uphone,
-                            usex:this.formValidate.usex
+                            uEmail:localStorage.getItem("userEmail"),
+                            uId:localStorage.getItem("userId"),
+                            uLoginName:localStorage.getItem('userName'),
+                            uName:this.formValidate.uName,
+                            uPassword:'',
+                            uPhone:this.formValidate.uPhone,
+                            uSex:this.formValidate.uSex
                         })
                         this.$http.post('user/update',params).then(result=>{
                             if(result.body.status=="200"){
                                 this.formValidate=result.body.message;
-                                this.$store.dispatch("setUser",result.body.message.uloginName)
+                                 localStorage.setItem("userName",result.body.message.uLoginName)
+                                 localStorage.setItem('userEmail',result.body.message.uEmail)
+                                localStorage.setItem('Name',result.body.message.uName)
+                                localStorage.setItem('userPhone',result.body.message.uPhone)
+                                this.$store.dispatch("setUser",result.body.message.uLoginName)
                                 this.$message.success('修改成功')
                             }else{
                                 this.$message.error('修改失败！请重试')

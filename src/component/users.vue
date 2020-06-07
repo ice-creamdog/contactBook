@@ -94,48 +94,48 @@
               columns12: [
                     {
                         title: '联系人名字',
-                        key: 'cname',
+                        key: 'cName',
                         width: 300,
                         fixed: 'left'
                     },
                     {
                         title: '联系人电话',
-                        key: 'cphone',
+                        key: 'cPhone',
                         width: 300
                     },
                     {
                         title: '联系人性别',
-                        key: 'csex',
+                        key: 'cSex',
                         width: 300
                     },
                     {
                         title: '联系人地址',
-                        key: 'caddress',
+                        key: 'cAddress',
                         width: 300
                     },
                     {
                         title: '联系人qq',
-                        key: 'cqq',
+                        key: 'cQQ',
                         width: 500
                     },
                     {
                         title: '联系人职务',
-                        key: 'cwork',
+                        key: 'cWork',
                         width: 300
                     },
                     {
                         title: '联系人分类',
-                        key: 'ctype',
+                        key: 'cType',
                         width: 300
                     },
                     {
                         title: '联系人id',
-                        key: 'cid',
+                        key: 'cId',
                         width: 300
                     },
                     {
                         title: '用户id',
-                        key: 'uid',
+                        key: 'uId',
                         width: 300
                     },
                     {
@@ -210,13 +210,14 @@
                             this.$http({
                                       method:'post',
                                       url:'user/contact/search',
-                                      params:{  uId:localStorage.getItem("userId"),  info:"ooo",  CName:this.formInline.CName,  CSex:this.formInline.CSex,  CType:this.formInline.CtypeId
+                                      params:{  uId:localStorage.getItem("userId"),   cName:this.formInline.CName,  cSex:this.formInline.CSex,  cType:this.formInline.CtypeId
           },
                                       headers:{'Content-Type':'application/x-www-form-urlencoded'}
                                       
                                       }).then(result=>{
                               if(result.body.status=="200"){
                                 this.data6=result.body.message
+                                console.log(result.body.message)
                                 this.formInline.CName ="";
                                 this.formInline.Ctypeid ="",
                                 this.formInline.CSex =""
@@ -239,6 +240,7 @@
             remove (index) {
               if(localStorage.getItem('userToken')!=''){
                  this.data6.splice(index, 1);
+
                 this.$http({
                             method:'post',
                             url:'uuser/contact/delete',
@@ -265,7 +267,8 @@
                 var data = JSON.stringify({   uId:localStorage.getItem("userId"),  uLoginName:localStorage.getItem('userName')})
                 this.$http.post('user/contact/all',data).then(result=>{
                 if(result.body.status=='200'){
-                  this.data6=this.data6.concat(result.body.message)
+                  console.log(result.body.message)
+                  this.data6=result.body.message
                 }else{
                   this.$message.error('联系人列表加载失败!')
                 }

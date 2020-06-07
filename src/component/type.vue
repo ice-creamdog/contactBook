@@ -77,7 +77,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.update()
+                                            this.update(params.index)
                                         }
                                     }
                                 }, '更新'),
@@ -96,34 +96,7 @@
                         }
                     }
                 ],
-                data1: [
-                    {
-                        typeName: 'John Brown',
-                        typeId: 18,
-                        typeComment: 'New York No. 1 Lake Park',
-                        
-                    },
-                    {
-                        typeName: 'John Brown',
-                        typeId: 18,
-                        typeComment: 'New York No. 1 Lake Park',
-                        
-                    },
-                    {
-                        typeName: 'John Brown',
-                        typeId: 18,
-                        typeComment: 'New York No. 1 Lake Park',
-                        
-                    },
-                    {
-                        typeName: 'John Brown',
-                        typeId: 18,
-                        typeComment: 'New York No. 1 Lake Park',
-                        
-                    }
-
-                   
-                ],
+                data1: [ ],
                 delInfo:"",
                 addInfo:"",
                 
@@ -144,7 +117,7 @@
                             
                             }).then(result=>{
                     if(result.body.status=="200"){
-                    this.data1 = this.data1.concat(result.body.message)
+                    this.data1 = result.body.message;
                     
                     
                     }else{
@@ -154,14 +127,16 @@
               
             },
                Remove (index) {
+                  var  data=this.data1[index]
                  this.data1.splice(index, 1);
+                 
                  var delObj = JSON.stringify({
-                        typeComment: "",
-                        typeId: "",
-                        typeName: this.delInfo,
+                        typeComment: data.typeComment,
+                        typeId: data.typeId,
+                        typeName: data.typeName,
                         uid: localStorage.getItem("userId")
                     })
-                    this.$http.post('/user/type/delete',delObj).then(reult=>{
+                    this.$http.post('user/type/delete',delObj).then(result=>{
                     if(result.body.status=="200"){
                         this.$message.success("删除成功")
                         this.delInfo=""
@@ -184,7 +159,7 @@
                         typeName: this.delInfo,
                         uid: localStorage.getItem("userId")
                     })
-                    this.$http.post('/user/type/delete',delObj).then(reult=>{
+                    this.$http.post('user/type/delete',delObj).then(reult=>{
                     if(result.body.status=="200"){
                         this.$message.success("删除成功")
                         this.delInfo=""
@@ -200,7 +175,7 @@
                 
                 
             },
-            update () {
+            update (index) {
                 this.$Modal.confirm({
                     render: (h) => {
                         return h('Input', {
@@ -211,9 +186,20 @@
                             },
                             on: {
                                 input: (val) => {
+                                    var data=this.data1[index];
+                                    data.typeName=val;
+                                    this.$http.post('user/type/update',{typeComment:data.typeComment,typeId:data.typeId,typeName:val,uId:localStorage.getItem('userId')}).then(result=>{
+                                        if(result.body.status=="200"){
+                                            this.data1[index]=result.body.message
+                                            this.$message.success('更新成功')
+                                        }else{
+                                            this.$message.error('失败了，请重试')
+                                        }
+                                    })
                                     this.value = val;
                                 }
-                            }
+                            },
+                            
                         })
                     }
                 })

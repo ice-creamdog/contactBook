@@ -28,7 +28,7 @@
             </FormItem>
         <FormItem>
             <Button type="primary" @click="add('formCustom')">保存</Button>
-            <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
+            <Button @click="handleReset('formCustom')" style="margin-left: 8px">重置</Button>
         </FormItem>
     </Form>
     </div>
@@ -42,13 +42,15 @@
             return {
                 formCustom: {
                     caddress:'',
+                    cid:"",
                     cname:'',
                     cphone:'',
                     cqq:'',
                     csex:'',
                     ctype:'',
                     cwork:'',
-                    cid:""
+
+                   
                 },
                 ruleCustom: {
                     caddress:[
@@ -82,21 +84,27 @@
         },
         methods: {
             add (name) {
+                console.log(3)    
                 if(localStorage.getItem('userToken')!=''){
                     this.$refs[name].validate((valid) => {
                     if (valid) {
-                        var params = JSON.stringify({
-                            caddress:this.formCustom.caddress,
-                            cname:this.formCustom.cname,
-                            cphone:this.formCustom.cphone,
-                            cqq:this.formCustom.cqq,
-                            csex:this.formCustom.csex,
-                           ctype:this.formCustom.ctype,
-                           cwork:this.formCustom.cwork,
-                           cid:this.formCustom.cid,
-                           uid:localStorage.getItem("userId")
-                        })
-                        this.$http.post('user/contact/insert',params).then(res=>{
+                        console.log(1)
+                        
+                        
+                        console.log(2)    
+                        this.$http.post('user/contact/insert',{
+                                               
+                                cAddress: this.formCustom.caddress,
+                                cId: this.formCustom.cid,
+                                cName:this.formCustom.cname,
+                                cPhone:this.formCustom.cphone,
+                                cQq:this.formCustom.cqq,
+                                cSex:this.formCustom.csex,
+                                cType:this.formCustom.ctype,
+                                cWork:this.formCustom.cwork,
+                                uId:localStorage.getItem("userId")
+                        }).then(res=>{
+                            
                             if(res.body.status=='200'){
                                 
                                 this.formCustom.caddress="";
@@ -113,7 +121,7 @@
                             }else{
                                 this.$Message.error('添加失败，请重试');
                             }
-                        })
+                        }).catch(console.log(error))
                         
                     } else {
                         this.$Message.error('必须填写电话，请重试');

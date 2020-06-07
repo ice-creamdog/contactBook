@@ -68,6 +68,9 @@ import store from '../vuex/store.js'
                                 localStorage.setItem("userName",result.body.message.uLoginName)
                                 localStorage.setItem("userToken",result.body.token);
                                 localStorage.setItem("userId",result.body.message.uId)
+                                localStorage.setItem('userEmail',result.body.message.uEmail)
+                               
+                                console.log(result.body.message)
                                 this.$store.dispatch("setUser",result.body.message.uLoginName)
                                 this.$store.dispatch("setToken",result.body.token)
                                 this.$store.dispatch("setId",result.body.message.uId)

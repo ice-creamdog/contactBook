@@ -65,11 +65,15 @@ export default {
                             
                             }).then(result=>{
 
-                                sessionStorage.setItem("userName",null)
-                                sessionStorage.setItem("userToken","");
-                                this.$store.dispatch("setUser",null)
-                                this.$store.dispatch("setToken","")
-                                this.$store.dispatch("setId",null)
+                                localStorage.removeItem("userName");
+                                localStorage.removeItem("userToken");
+                                localStorage.removeItem('userId');
+                                localStorage.removeItem("userEmail");
+                                localStorage.removeItem("Name");
+                                localStorage.removeItem("uPhone")
+                                this.$store.dispatch("setUser",null);
+                                this.$store.dispatch("setToken","");
+                                this.$store.dispatch("setId",null);
                                 this.$router.push({path:'/index'})
             })
         },
@@ -88,6 +92,13 @@ export default {
 
                     clearTimeout(timer);
                     this.$message.success('删除成功！');
+                    localStorage.removeItem("userName");
+                    localStorage.removeItem("userToken");
+                    localStorage.removeItem('userId')
+                    localStorage.removeItem("userEmail")
+                    this.$store.dispatch("setUser",null)
+                    this.$store.dispatch("setToken","")
+                    this.$store.dispatch("setId",null)
 
                     const timer=setTimeout(()=>{
                         this.$router.push({path:'/index'})
