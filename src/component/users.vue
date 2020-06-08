@@ -36,7 +36,7 @@
                             </MenuItem>
                             <MenuItem name="3">
                                 <Icon type="ios-analytics"></Icon>
-                                <router-link to="/users" >用户</router-link>
+                                <router-link to="/" >首页</router-link>
                             </MenuItem>
                             <MenuItem name="3">
                                 <router-link to="/add"  >添加联系人</router-link>
@@ -65,8 +65,8 @@
                                         <strong>{{ row.name }}</strong>
                                     </template>
                                     <template slot-scope="{ row, index }" slot="action">
-                                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">View</Button>
-                                        <Button type="error" size="small" @click="remove(index)">Delete</Button>
+                                        <Button type="primary" size="small" style="margin-right: 5px" @click="update(index)">更新</Button>
+                                        <Button type="error" size="small" @click="remove(index)">删除</Button>
                                     </template>
                                 </Table>
                           Content
@@ -146,31 +146,18 @@
                     }
                 ],
               data6: [
-                    {
-                        "cname": 'JBrown',
-                        "cphone": 181111111,
-                        "csex": '男',
-                        "caddress": 'New York No. 1 Lake Park',
-                        "cqq": '111111',
-                        "cwork": '程序员',
-                        "ctype":'同学',
-                        "cid":1,
-                        "uid":2
-                    },
-                    {
-                       cname: 'John Brown',
-                        cphone: 181111111,
-                        csex: '男',
-                        caddress: 'New York No. 1 Lake Park',
-                        cqq: '111111',
-                        cwork: '程序员',
-                        ctype:'同学',
-                        cid:1,
-                         uid:2
-                    },
-                    
-                    
-                ]
+                {cId:'',
+                  cSex:'',
+                  cPhone:'',
+                  cName:'',
+                  cAddress:'',
+                  cQQ:'',
+                  cWork:'',
+                  cType:'',
+                  uId:''
+                  
+                  }
+              ]
             }
         },
         created() {
@@ -231,20 +218,21 @@
       //添加联系人之后重新新加载
           //删除联系人
           //修改联系人
-            show (index) {
-                this.$Modal.info({
-                    title: '联系人信息',
-                    content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
-                })
+            update (index) {
+              var data4=this.data6[index]
+                localStorage.setItem('cid',data4.cId)
+                this.$router.push({path:'/update'})
             },
             remove (index) {
               if(localStorage.getItem('userToken')!=''){
+                 var data3 = this.data6[index]
                  this.data6.splice(index, 1);
+                 
 
                 this.$http({
                             method:'post',
-                            url:'uuser/contact/delete',
-                            params:{cId:this.data[index].cid,uId:localStorage.getItem("userId")},
+                            url:'user/contact/delete',
+                            params:{cId:data3.cId,uId:localStorage.getItem("userId")},
                             headers:{'Content-Type':'application/x-www-form-urlencoded'} }).then(result=>{
                   if(result.body.status=="200"){
                     this.$message.success("删除成功")
@@ -272,6 +260,12 @@
                 }else{
                   this.$message.error('联系人列表加载失败!')
                 }
+              }).catch(function (err) {
+                console.log(err);
+                this.$message.error({
+                  message:"你还没有设置联系人，请设置",
+                  showClose: true
+                })
               })
               }else{this.$message.error('请先登录')}
               

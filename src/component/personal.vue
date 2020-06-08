@@ -82,9 +82,9 @@ export default {
                             uId:localStorage.getItem("userId"),
                             uLoginName: localStorage.getItem('userName'),
                             uName: localStorage.getItem('Name'),
-                            uPassword: '',
+                            uPassword:'',
                             uPhone:localStorage.getItem('userPhone'),
-                            uSex: "男"
+                            uSex:"男"
                         // 发送全局的用户名和邮箱 密码  其他为本地的
                     })
                     this.$http.post('user/update',data).then(result=>{
@@ -127,7 +127,7 @@ export default {
                                 this.$message.error('修改失败！请重试')
                             }
                         })
-                        this.$Message.success('Success!');
+                        
                     } else {
                         this.$Message.error('输入有误，请重试');
                     }

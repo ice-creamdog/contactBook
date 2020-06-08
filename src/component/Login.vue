@@ -14,7 +14,8 @@ import { isLogin } from '../vuex/getters';
             </Input>
         </FormItem>
         <FormItem>
-            <Button type="primary" @click="login('formInline')">Signin</Button>
+            
+            <Button type="primary" @click="login('formInline')">登录</Button>
         </FormItem>
     </Form>
     </Form>
@@ -45,6 +46,7 @@ import store from '../vuex/store.js'
             
         },
         methods: {
+            
             // 点击登录，如果通过表达式验证，发送请求
             // 判断响应状态，成功就保存信息到个人资料页面，并且实现跳转
             // 失败就提示用户密码错误

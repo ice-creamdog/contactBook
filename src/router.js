@@ -32,18 +32,12 @@ var router = new VueRouter({
     linkActiveClass:'mui-active'
   });
   
-    router.beforeEach((to, from, next) => {
-      if (to.path === '/login') {
-        next();
-      } else {
-        let token = localStorage.getItem('userToken');
-     
-        if (token === 'null' || token === '') {
-          next('/login');
-        } else {
-          next();
-        }
-      }
-    });
+  router.beforeEach((to, from, next) => {
+    /* 路由发生变化修改页面title */
+    if (to.meta.title) {
+      document.title = to.meta.title;
+    }
+    next();
+  })
 
   export default router

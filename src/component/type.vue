@@ -23,7 +23,7 @@
                                     
                                     <MenuItem name="1-1"><input type="text" placeholder="删除类型" style="width:150px ;font-size:12px" v-model="delInfo"><Button type="error" ghost @click="Delete">删除</Button></MenuItem>
                                     
-                                    <MenuItem name="1-2"><input type="text" placeholder="添加类型" style="width:150px ;font-size:12px" v-model="addInfo"><Button type="primary" ghost @click="Add">添加</Button></MenuItem>
+                                    <MenuItem name="1-2"><input type="text" placeholder="添加类型" style="width:150px ;font-size:12px" v-model="addName"><Button type="primary" ghost @click="Add">添加</Button></MenuItem>
                                     
                                 </Submenu>
                                 
@@ -98,7 +98,8 @@
                 ],
                 data1: [ ],
                 delInfo:"",
-                addInfo:"",
+                addName:"",
+                addComment:''
                 
             };
         },
@@ -123,6 +124,12 @@
                     }else{
                     this.$message.error("获取联系人类型失败！")
                     }
+              }).catch(function (err) {
+                console.log(err);
+                this.$message.error({
+                  message:"你还没有设置联系人类型，请设置",
+                  showClose: true
+                })
               })}
               
             },
@@ -131,10 +138,10 @@
                  this.data1.splice(index, 1);
                  
                  var delObj = JSON.stringify({
-                        typeComment: data.typeComment,
+                        typeComment: data.typeComment?data.typeComment:"",
                         typeId: data.typeId,
                         typeName: data.typeName,
-                        uid: localStorage.getItem("userId")
+                        uId: localStorage.getItem("userId")
                     })
                     this.$http.post('user/type/delete',delObj).then(result=>{
                     if(result.body.status=="200"){
@@ -153,11 +160,16 @@
                     if(this.delInfo==""){
                      this.$message.error("输入不能为空")
                 }else{
+                    for( var i=0, l =this.data1.length;i <l;i++){
+                        if(this.delInfo==this.data1[i].typeName){
+                            var data2 = this.data1[i]
+                        }
+                    }
                     var delObj = JSON.stringify({
-                        typeComment: "",
-                        typeId: "",
+                        typeComment: '',
+                        typeId: data2.typeId,
                         typeName: this.delInfo,
-                        uid: localStorage.getItem("userId")
+                        uId: localStorage.getItem("userId")
                     })
                     this.$http.post('user/type/delete',delObj).then(reult=>{
                     if(result.body.status=="200"){
@@ -178,51 +190,86 @@
             update (index) {
                 this.$Modal.confirm({
                     render: (h) => {
-                        return h('Input', {
+                        return h('div', [
+                                h('Input', {
                             props: {
-                                value: this.value,
+                                value: this.value1,
                                 autofocus: true,
-                                placeholder: 'Please enter your name...'
+                                placeholder: 'Please enter your name...',
+                                width:"100px"
                             },
                             on: {
                                 input: (val) => {
-                                    var data=this.data1[index];
-                                    data.typeName=val;
-                                    this.$http.post('user/type/update',{typeComment:data.typeComment,typeId:data.typeId,typeName:val,uId:localStorage.getItem('userId')}).then(result=>{
-                                        if(result.body.status=="200"){
-                                            this.data1[index]=result.body.message
-                                            this.$message.success('更新成功')
-                                        }else{
-                                            this.$message.error('失败了，请重试')
-                                        }
-                                    })
-                                    this.value = val;
+                                    
+                                    this.value1 = val;
                                 }
                             },
                             
+                        }),h('Input', {
+                            props: {
+                                value: this.value2,
+                                autofocus: true,
+                                placeholder: 'Please enter your name...',
+                                width:"100px",
+                                size:'small'
+                            },
+                            on: {
+                                input: (val) => {
+                                    
+                                    this.value2 = val;
+                                }
+                            },
+                            
+                        }),
+                               
+                            ])
+                        
+                    },
+                    onOk:()=>{
+                        if(this.value1==''&&this.value2==""){
+                            this.$message.error("输入不能都为空")
+                        }else{
+                            var data=this.data1[index];
+
+                        data.typeName=this.value1;
+                        data.typeComment=this.value2
+                        this.$http.post('user/type/update',{typeComment:data.typeComment,typeId:data.typeId,typeName:data.typeName,uId:localStorage.getItem('userId')}).then(result=>{
+                            if(result.body.status=="200"){
+                                this.data1[index]=result.body.message
+                                this.value1="";
+                                this.value2="";
+                                this.$message.success('更新成功')
+                            }else{
+                                this.$message.error('失败了，请重试')
+                            }
                         })
+                        }
+                        
+                        
                     }
                 })
             },
             Add(){
                 if(localStorage.getItem('userToken')!=''){
-                    if(this.addInfo==''){
+                    if(this.addName==""){
                          this.$message.error("输入不能为空")
                     }else{
                         this.$http({
                             method:'post',
                             url:'user/type/add',
-                            params:{typeName:this.addInfo,uId:localStorage.getItem("userId") },
+                            params:{typeName:this.addName,uId:localStorage.getItem("userId") },
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
                             
                             }).then(result=>{
                     if(result.body.status=="200"){
                         this.$message.success("添加成功")
-                        this.addInfo ='';
+                        this.addName ="";
+                        
                         this.getCnoType()
                     }else{
                         this.$message.error('添加失败')
-                        this.addInfo ='';
+                        this.addName ="";
+                        
                          }
                     })
                     }

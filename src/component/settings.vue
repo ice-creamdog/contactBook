@@ -70,11 +70,11 @@ export default {
                                 localStorage.removeItem('userId');
                                 localStorage.removeItem("userEmail");
                                 localStorage.removeItem("Name");
-                                localStorage.removeItem("uPhone")
+                                localStorage.removeItem("userPhone")
                                 this.$store.dispatch("setUser",null);
                                 this.$store.dispatch("setToken","");
                                 this.$store.dispatch("setId",null);
-                                this.$router.push({path:'/index'})
+                                this.$router.push({path:'/'})
             })
         },
         deleteUser(){
@@ -82,7 +82,7 @@ export default {
             if(localStorage.getItem('userToken')!=''){
                 this.$http({
                             method:'post',
-                            url:'user/deleta',
+                            url:'user/delete',
                             params:{uLoginName:localStorage.getItem('userName'),uPassword:""},
 
                             headers:{'Content-Type':'application/x-www-form-urlencoded'}
@@ -101,7 +101,7 @@ export default {
                     this.$store.dispatch("setId",null)
 
                     const timer=setTimeout(()=>{
-                        this.$router.push({path:'/index'})
+                        this.$router.push({path:'/'})
                     })
                 }else{this.$message.error('删除失败，请重试！');}
             })

@@ -1,38 +1,44 @@
 
 <template>
     <div class="update_container">
-         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-        <FormItem label="Password" prop="passwd">
-            <Input type="password" v-model="formCustom.passwd"></Input>
-        </FormItem>
+         <Form ref="formCustom" :model="formCustom"  :label-width="80">
+        
         
         <FormItem label="姓名" >
-            <Input type="text" v-model="formCustom.cname"></Input>
+            <Input type="text" v-model="formCustom.cName"></Input>
         </FormItem>
         <FormItem label="电话" >
-            <Input type="text" v-model="formCustom.cphone"></Input>
+            <Input type="text" v-model="formCustom.cPhone"></Input>
         </FormItem>
-        <FormItem label="性别" >
-            <Input type="text" v-model="formCustom.csex"></Input>
+        <FormItem label="性别">
+            <Select v-model="formCustom.cSex" style="width:400px;height:52px">
+                <Option  value="男" >男</Option>
+                <Option  value="女" >女</Option>
+            </Select>
         </FormItem>
-        <FormItem label="分类" >
-            <Input type="text" v-model="formCustom.ctype"></Input>
+        <FormItem label="分类">
+            <Select v-model="formCustom.ctypeId"  style="width:400px;height:52px">
+                <Option v-for="item in formCustom.cType" :key="item.typeId"  :value="item.typeId">{{item.typeName}}</Option>
+            </Select>
         </FormItem>
         <FormItem label="邮箱" >
-            <Input type="text" v-model="formCustom.cemail"></Input>
+            <Input type="text" v-model="formCustom.cEmail"></Input>
         </FormItem>
-        <FormItem label="备注" >
-            <Input type="text" v-model="formCustom.cComment"></Input>
+        <FormItem label="地址" >
+            <Input type="text" v-model="formCustom.cAddress"></Input>
         </FormItem>
         <FormItem label="QQ" >
-            <Input type="text" v-model="formCustom.cqq"></Input>
+            <Input type="text" v-model="formCustom.cQq"></Input>
         </FormItem>
         <FormItem label="职务" >
-            <Input type="text" v-model="formCustom.cwork"></Input>
+            <Input type="text" v-model="formCustom.cWork"></Input>
+        </FormItem>
+        <FormItem label="id" >
+            <Input type="text" v-model="formCustom.cId" disabled></Input>
         </FormItem>
         <FormItem>
-            <Button type="primary" @click="handleSubmit('formCustom')">Submit</Button>
-            <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
+            <Button type="primary" @click="handleSubmit('formCustom')">保存</Button>
+            <Button @click="handleReset('formCustom')" style="margin-left: 8px">重置</Button>
         </FormItem>
     </Form>
     </div>
@@ -41,82 +47,104 @@
 <script>
  export default {
         data () {
-            const validatePass = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('Please enter your password'));
-                } else {
-                    if (this.formCustom.passwdCheck !== '') {
-                        // 对第二个密码框单独验证
-                        this.$refs.formCustom.validateField('passwdCheck');
-                    }
-                    callback();
-                }
-            };
-            const validatePassCheck = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('Please enter your password again'));
-                } else if (value !== this.formCustom.passwd) {
-                    callback(new Error('The two input passwords do not match!'));
-                } else {
-                    callback();
-                }
-            };
-            const validateAge = (rule, value, callback) => {
-                if (!value) {
-                    return callback(new Error('Age cannot be empty'));
-                }
-                // 模拟异步验证效果
-                setTimeout(() => {
-                    if (!Number.isInteger(value)) {
-                        callback(new Error('Please enter a numeric value'));
-                    } else {
-                        if (value < 18) {
-                            callback(new Error('Must be over 18 years of age'));
-                        } else {
-                            callback();
-                        }
-                    }
-                }, 1000);
-            };
+            
+           
+            
             
             return {
+                id:localStorage.getItem("cid"),
                 formCustom: {
-                    cname:'',
-                    cphone:'',
-                    csex:"",
-                    ctype:'',
-                    cemail:'',
-                    cComment:'',
-                    cqq:'',
-                    cwork:''
+                    cName:'',
+                    cPhone:'',
+                    cSex:'',
+                    cType:[],
+                    cEmail:'',
+                    cAddress:'',
+                    cQq:'',
+                    cWork:'',
+                    ctypeId:''
                 },
-                ruleCustom: {
-                    passwd: [
-                        { validator: validatePass, trigger: 'blur' }
-                    ],
-                    passwdCheck: [
-                        { validator: validatePassCheck, trigger: 'blur' }
-                    ],
-                    age: [
-                        { validator: validateAge, trigger: 'blur' }
-                    ]
-                }
+                
             }
         },
+        created(){
+            this.getContacter()
+           
+          
+        },
         methods: {
+            
+            getContacter(){
+                if(localStorage.getItem('userToken'=="")){
+                    this.$message.error('请登录')
+                }else{
+                    this.$http({
+                            method:'post',
+                            url:'user/contact/select',
+                            params:{uId:localStorage.getItem("userId"),cId:this.id},
+                            headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                            
+                            }).then(result=>{
+                if(result.body.status=="200"){
+                  this.formCustom=result.body.message
+                 
+                    this.$http({
+                                    method:'post',
+                                    url:'user/type/all',
+                                    params:{uId:localStorage.getItem("userId")},
+                                    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+                                    
+                                    }).then(result=>{
+                        if(result.body.status=="200"){
+                        this.formCustom.cType=result.body.message
+                        
+                        
+                        }else{
+                        this.$message.error("获取联系人类型失败！")
+                        }
+                        })
+              
+                  
+                  
+                }else{
+                  this.$message.error("获取联系人类型失败！")
+                  }
+                })
+                }
+            },
             handleSubmit (name) {
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('Success!');
+                
+                    if (localStorage.getItem("userToken")) {
+                        this.$http.post('user/contact/update',{
+                            cAddress:this.formCustom.cAddress,
+                            cId:this.id,
+                            cName:this.formCustom.cName,
+                            cPhone:this.formCustom.cPhone,
+                            cQq:this.formCustom.cQq,
+                            cSex:this.formCustom.cSex,
+                            cType:this.formCustom.ctypeId,
+                            cWork:this.formCustom.cWork,
+                            uId:localStorage.getItem('userId')
+                        }).then(result=>{
+                            if(result.body.status=="200"){
+                                this.$Message.success('修改成功');
+                                this.$router.push({path:'/users'})
+                                localStorage.removeItem("cid")
+                            }else{
+                                this.$Message.error('修改失败');
+                            }
+                        })
+                        
                     } else {
                         this.$Message.error('Fail!');
                     }
-                })
+                
             },
             handleReset (name) {
                 this.$refs[name].resetFields();
             }
-        }
+        },
+        
     }
 </script>
 

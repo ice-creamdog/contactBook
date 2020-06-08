@@ -2,10 +2,10 @@
   <div class="app-container">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <el-menu-item index="1"><img src="" alt=""></el-menu-item>
-            <router-link to="/users" index="2" class="el-menu-item">用户</router-link>
+            <router-link to="/users" index="2" class="el-menu-item">{{user}}</router-link>
              
-             <router-link to="/login" class="el-menu-item" >登录</router-link>
-            <router-link to="/register" index="3" class="el-menu-item">注册</router-link>
+             <router-link to="/login" class="el-menu-item" v-show="flag==''"  >登录</router-link>
+            <router-link to="/register" index="3" class="el-menu-item" v-show="flag==''" >注册</router-link>
             <router-link to="/help " index="4" class="el-menu-item">帮助</router-link>
         </el-menu>
         
@@ -33,6 +33,8 @@
 export default {
    data() {
       return {
+        flag:localStorage.getItem('userToken'),
+        user:localStorage.getItem('userName')!='null'?localStorage.getItem('userName'):"用户",
         activeIndex: '1',
         activeIndex2: '1',
         mark: 0,
